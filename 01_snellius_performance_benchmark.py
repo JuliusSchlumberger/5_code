@@ -1,0 +1,8 @@
+from Paper3_v1.main_performance import create_benchmark_case
+from Paper3_v1.main_central_path_directions import FILE_PATH_BENCHMARK_IN, FILE_PATH_BENCHMARK_OUT
+
+
+benchmark_file_path_in = FILE_PATH_BENCHMARK_IN
+benchmark_file_path_out = FILE_PATH_BENCHMARK_OUT
+
+create_benchmark_case(benchmark_file_path_in, benchmark_file_path_out)

@@ -1,0 +1,9 @@
+from Paper3_v1.main_performance import combine_all_performance_sets
+from Paper3_v1.main_central_path_directions import DIRECTORY_TIMEHORIZON_PATHWAYS, DIRECTORY_AGGREGATED_TIMEHORIZONS, ROH_LIST
+
+
+directory_path = DIRECTORY_TIMEHORIZON_PATHWAYS
+outputfile_path = DIRECTORY_AGGREGATED_TIMEHORIZONS
+rohs = ROH_LIST
+
+combine_all_performance_sets(directory_path, rohs, outputfile_path)

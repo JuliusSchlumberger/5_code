@@ -1,0 +1,12 @@
+import numpy as np
+import sys
+from Paper3_v1.main_central_path_directions import ROH_LIST, DIRECTORY_OBJECTIVES_FOR_COUNT, DIRECTORY_TIMEHORIZON_PATHWAYS
+from Paper3_v1.main_performance import combine_system_parameters
+
+
+rohs = ROH_LIST
+outputfile_path = DIRECTORY_OBJECTIVES_FOR_COUNT
+timehorizon_directory_path = DIRECTORY_TIMEHORIZON_PATHWAYS
+
+
+combine_system_parameters(timehorizon_directory_path, rohs, outputfile_path)

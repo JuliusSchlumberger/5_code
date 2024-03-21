@@ -1,0 +1,11 @@
+from Paper3_v1.main_performance import aggregate_objective_files_per_sector
+from Paper3_v1.main_central_path_directions import DIRECTORY_TIMEHORIZON_PATHWAYS, DIRECTORY_TIMEHORIZON_PER_ROH, ROH_LIST
+import sys
+
+input_directory = DIRECTORY_TIMEHORIZON_PATHWAYS
+output_directory = DIRECTORY_TIMEHORIZON_PER_ROH
+rohs = ROH_LIST
+
+risk_owner_hazard_of_interest=sys.argv[1]
+
+aggregate_objective_files_per_sector(input_directory, risk_owner_hazard_of_interest, output_directory)

@@ -1,0 +1,10 @@
+from Paper3_v1.main_timings import create_sequences_tipping_points
+from Paper3_v1.scripts.utilities.create_directory import create_directory_if_not_exists
+from Paper3_v1.main_central_path_directions import FILE_PATH_ALL_PATHWAYS_CHANGES,DIRECTORY_PATHWAYS_GENERATOR
+
+input_file_path = FILE_PATH_ALL_PATHWAYS_CHANGES
+output_file_path = DIRECTORY_PATHWAYS_GENERATOR
+
+create_directory_if_not_exists(output_file_path)
+
+create_sequences_tipping_points(input_file_path, output_file_path)
