@@ -14,4 +14,4 @@ def insert_linebreak(s, max_length=20):
         return s  # No space found; return the original string
 
     # Insert line break
-    return s[:break_point] + '<br>' + s[break_point + 1:]
+    return s[:break_point] + '\n' + s[break_point + 1:]

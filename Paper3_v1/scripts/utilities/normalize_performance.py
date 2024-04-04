@@ -8,8 +8,8 @@ def normalize_performance(row):
         if round(row['Value_benchmark'],2) == 0:
             return 0
         else:
-            return round(1 - row['Value_normal'] / row['Value_benchmark'],2)
+            return round(row['Value_normal'] / row['Value_benchmark'],2)
     else:
         benchmark_from_input = NORMALIZATION_BENCHMARKS[row['objective_parameter']]
-        return round(1 - row['Value_normal'] / benchmark_from_input,2)
+        return round(row['Value_normal'] / benchmark_from_input,2)
 

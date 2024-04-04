@@ -4,8 +4,9 @@ import plotly.graph_objects as go  # Import Plotly's graph_objects module
 from Paper3_v1.scripts.utilities.design_choices.add_measure_buttons import add_measure_buttons
 from Paper3_v1.scripts.utilities.design_choices.main_dashboard_design_choices import COLORSCALE_HEATMAP
 from Paper3_v1.scripts.utilities.design_choices.get_table_for_plot import get_table_for_plot
+from plotly.subplots import make_subplots
 
-def Heatmap(df, risk_owner_hazard, sector_objectives, df_interaction=None):
+def Heatmap(df, risk_owner_hazard, sector_objectives, figure_title, df_interaction=None):
     df = df[df[risk_owner_hazard] != 0]
 
     pivot_df, pivot_text_df = get_table_for_plot(df, risk_owner_hazard)
@@ -34,7 +35,7 @@ def Heatmap(df, risk_owner_hazard, sector_objectives, df_interaction=None):
             zmax=1.0,
             colorbar=dict(tickvals=[0.1, 0.3, 0.5, 0.7, 0.9],
                           ticktext=['Lowest', 'Low', 'Medium', 'High', 'Highest'],
-                          title='Performance'))
+                          title='Performance')),
         )
     else:
         updated_text = pivot_text_df_interactions.round(1).astype(str) + ', (old: ' + pivot_text_df.round(1).astype(str) + ')'
@@ -52,7 +53,8 @@ def Heatmap(df, risk_owner_hazard, sector_objectives, df_interaction=None):
             zmax=1.0,
             colorbar=dict(tickvals=[0.1, 0.3, 0.5, 0.7, 0.9],
                           ticktext=['Lowest', 'Low', 'Medium', 'High', 'Highest'],
-                          title='Performance'))
+                          title='Performance',
+                          len=0.2),), # Adjusts the colorbar length to 70% of the figure heighy
         )
 
 
@@ -62,13 +64,18 @@ def Heatmap(df, risk_owner_hazard, sector_objectives, df_interaction=None):
 
     fig = add_measure_buttons(fig, y_axis_values, risk_owner_hazard)
 
+    # Add figure title
+    fig.update_layout(title={'text': figure_title,'y':.98, 'x':0.5, 'xanchor': 'center', 'yanchor': 'top'})
+
     fig.update_layout(
         autosize=True,  # Allows the figure to resize based on the enclosing HTML element's size
-        margin=dict(l=50, r=50, t=20, b=20)  # Adjust margins to ensure content fits well; customize as needed
+        margin=dict(l=50, r=50, t=50, b=20),  # Adjust margins to ensure content fits well; customize as needed
+        xaxis=dict(side='top')
     )
 
     fig.update_xaxes(domain=[0.15, 1])  # Adjusting the domain can change the plotting area's width
     fig.update_yaxes(domain=[0.2, 1])  # Adjusting the domain can change the plotting area's height
+    # fig.update_layout(width=800, height=600)  # Adjust figure size
 
     # fig.add_annotation(dict(font=dict(color="black", size=14),
     #                         x=0.5,

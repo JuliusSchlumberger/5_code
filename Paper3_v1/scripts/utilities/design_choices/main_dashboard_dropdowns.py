@@ -1,4 +1,4 @@
-from Paper3_v1.scripts.utilities.map_system_parameters import SECTOR_OBJECTIVES, OBJECTIVE_PARAMETER_DICT
+from Paper3_v1.scripts.utilities.map_system_parameters import SECTOR_OBJECTIVES, OBJECTIVE_PARAMETER_DICT, AXIS_LABELS
 
 ROH_DICT = {
     'farmer - flood': 'flood_agr',
@@ -42,8 +42,8 @@ WHICH_OPTIONS = {
 }
 
 WHICH_OPTIONS = {
-    'PCP': 'PCP',
-    'StackedBar': 'StackedBar',
+    'Parallel Coordinates Plot': 'PCP',
+    'Stacked Bar': 'StackedBar',
     'Heatmap': 'Heatmap'
 }
 
@@ -52,6 +52,11 @@ PERFORMANCE_METRICS = {
     '50% confidence interval': '50%',
     '95% confidence interval': '95%',
     'expected performance': 'average'
+}
+
+INTERACTION_VIZ = {
+    'Pathways Options': 'image',
+    'Pathways Performance': 'graph'
 }
 
 # SECTOR_OBJECTIVES_BUTTONS = {}
@@ -66,18 +71,19 @@ SECTOR_OBJECTIVES_BUTTONS = {
     for key, labels in SECTOR_OBJECTIVES.items()
 }
 
+label_keys = list(AXIS_LABELS.keys())
 RANGE = {
-    'AgrFlood_Damage [MEUR]': [0,400],
-    'AgrFlood_DRM_cost [MEUR]':[0,400],
-    # 'DamAgr_d_tot':'AgrDrought_DamageReduction', # this is just damage, neglects land loss effect
-    'AgrDrought_DRM_cost [MEUR]':[0,400],
-    'Agr_CropLoss [MEUR]':[0,800],
-    'UrbFlood_Damage [MEUR]':[0,1000],
-    'UrbFlood_DRM_cost [MEUR]':[0,500],
-    'ShpDrought_Damage [MEUR]':[0,2000],
-    'ShpDrought_DRM_cost [MEUR]':[0,2000],
-    list(ROH_DICT.keys())[0]:[1,14],
-    list(ROH_DICT.keys())[1]:[1,14],
-    list(ROH_DICT.keys())[2]:[1,14],
-    list(ROH_DICT.keys())[3]:[1,14],
+    AXIS_LABELS[label_keys[0]]: [0,800],
+    AXIS_LABELS[label_keys[1]]:[0,600], # 600
+    AXIS_LABELS[label_keys[2]]:[0,300],
+    AXIS_LABELS[label_keys[3]]:[0,800], #800
+    AXIS_LABELS[label_keys[4]]:[0,20000],
+    AXIS_LABELS[label_keys[5]]:[0,1000],
+    AXIS_LABELS[label_keys[6]]:[0,20000],
+    AXIS_LABELS[label_keys[7]]:[0,4000],
+    list(ROH_DICT.keys())[0]:[0,14],
+    list(ROH_DICT.keys())[1]:[0,10], # 10
+    list(ROH_DICT.keys())[2]:[0,9],
+    list(ROH_DICT.keys())[3]:[0,14],
+    'performance_metric': [0,1]
 }

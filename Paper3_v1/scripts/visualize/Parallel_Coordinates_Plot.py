@@ -6,57 +6,72 @@ from Paper3_v1.scripts.utilities.design_choices.main_dashboard_design_choices im
 from Paper3_v1.scripts.utilities.design_choices.main_dashboard_dropdowns import ROH_DICT_INV, RANGE
 import plotly.graph_objects as go
 import pandas as pd
+import numpy as np
 
 
 from Paper3_v1.scripts.utilities.design_choices.add_measure_buttons import add_measure_buttons
 
-def Parallel_Coordinates_Plot(df, risk_owner_hazard, df_interaction=None):
-    df = df[df[risk_owner_hazard] != 0]
-
+def Parallel_Coordinates_Plot(df, risk_owner_hazard, figure_title, df_interaction=None):
+    # df = df[df[risk_owner_hazard] != 0]
     # Create a subplot layout with 1 row and 2 columns
     fig = make_subplots(
         rows=1, cols=2,
-        column_widths=[0.6, 0.4],  # Left plot takes 60% of the width
-        specs=[[{"type": "parcoords"}, {"type": "table"}]]  # Specify types for subplots
-    )
+        column_widths=[0.8, 0.2],
+        specs=[[{"type": "parcoords"}, {"type": "table"}]])
 
     if df_interaction is None:
         pivot_df = df.pivot_table(
-            index=risk_owner_hazard,
+            index=[risk_owner_hazard,'performance_metric'],
             columns='objective_parameter',
             values='Value',
             aggfunc='sum'  # or 'mean', 'max', etc., depending on the required aggregation
         )
         reset_pivot = pivot_df.reset_index()
-        reset_pivot['Color'] = 0
+        # reset_pivot['Color'] = 0
+        reset_pivot['performance_metric'] = reset_pivot['performance_metric'].map({'95%': 1, '50%': .5, '5%': 0, 'average': .6})
+        reset_pivot['Color'] = reset_pivot['performance_metric'].copy()
 
     else:
-        df_interaction = df_interaction[df_interaction[risk_owner_hazard] != 0]
+        # df_interaction = df_interaction[df_interaction[risk_owner_hazard] != 0]
 
 
         pivot_df1 = df.pivot_table(
-            index=risk_owner_hazard,
+            index=[risk_owner_hazard,'performance_metric'],
             columns='objective_parameter',
             values='Value',
             aggfunc='sum'  # or 'mean', 'max', etc., depending on the required aggregation
         )
         reset_pivot1 = pivot_df1.reset_index()
-        reset_pivot1['Color'] = 0
+
+        reset_pivot1['performance_metric'] = reset_pivot1['performance_metric'].map(
+            {'95%': 1, '50%': .5, '5%': 0, 'average': .6})
+        # reset_pivot1['Color'] = reset_pivot1['performance_metric']
+        reset_pivot1['Color'] = 0.8
 
         pivot_df2 = df_interaction.pivot_table(
-            index=risk_owner_hazard,
+            index=[risk_owner_hazard,'performance_metric'],
             columns='objective_parameter',
             values='Value',
             aggfunc='sum'  # or 'mean', 'max', etc., depending on the required aggregation
         )
         reset_pivot2 = pivot_df2.reset_index()
         reset_pivot2['Color'] = 1
+        reset_pivot2['performance_metric'] = reset_pivot2['performance_metric'].map(
+            {'95%': 1, '50%': .5, '5%': 0, 'average': .6})
+        reset_pivot2['Color'] = reset_pivot2['performance_metric'].copy()
 
 
         reset_pivot = pd.concat([reset_pivot1, reset_pivot2], ignore_index=True)
 
+    new_order = [risk_owner_hazard, *df['objective_parameter'].unique(), 'performance_metric', 'Color']
+    reset_pivot = reset_pivot[new_order]
+
+    # Rename axis
     reset_pivot = reset_pivot.rename(columns=AXIS_LABELS)
     reset_pivot = reset_pivot.rename(columns=ROH_DICT_INV)
+
+    # print(reset_pivot)
+
 
     dimensions = [
         dict(range=RANGE[col],
@@ -71,16 +86,25 @@ def Parallel_Coordinates_Plot(df, risk_owner_hazard, df_interaction=None):
                 colorscale=COLORSCALE_PCP,
             ),
             dimensions=dimensions,
-        ),
-        row=1, col=1
+        ),col=1, row=1
     )
 
+    # Add figure title
+    fig.update_layout(title={'text': figure_title,'y':.98, 'x':0.5, 'xanchor': 'center', 'yanchor': 'top'})
+
+    # Adjust axis labels
+    # Use np.vectorize to apply the replacement
+    replace_function = np.vectorize(lambda x: { 0: 'best case', .5: 'expected', .6: 'average', 1: 'worst case'}.get(x, x))
 
     for dimension in fig.data[0]['dimensions']:
         if dimension['label'] == ROH_DICT_INV[risk_owner_hazard]:
             dimension['tickvals'] = reset_pivot[ROH_DICT_INV[risk_owner_hazard]].unique()
             # inverted_dict = {value: key for key, value in cc_scenarios_int.items()}
             dimension['ticktext'] = [str(x) for x in reset_pivot[ROH_DICT_INV[risk_owner_hazard]].unique()]
+        if dimension['label'] == 'performance_metric':
+            dimension['tickvals'] = reset_pivot['performance_metric'].unique()
+            # inverted_dict = {value: key for key, value in cc_scenarios_int.items()}
+            dimension['ticktext'] = [str(x) for x in replace_function(reset_pivot['performance_metric'].unique())]
 
 
     # fig.update_xaxes(domain=[0.15, 1])  # Adjusting the domain can change the plotting area's width
@@ -89,8 +113,8 @@ def Parallel_Coordinates_Plot(df, risk_owner_hazard, df_interaction=None):
     # Add a shape for visual emphasis on the first axis
     fig.add_shape(
         type="rect",  # Add a rectangle shape
-        x0=-0.07, x1=0.07,  # Span a small range around the first axis
-        y0=-.1, y1=1.25,
+        x0=-.05, x1=0.07,  # Span a small range around the first axis
+        y0=-.1, y1=1.17,
         xref="paper", yref="paper",  # Reference the entire figure's dimensions
         fillcolor="lightgrey",  # Choose a subtle fill color
         opacity=0.5,  # Make the fill semi-transparent
@@ -101,8 +125,8 @@ def Parallel_Coordinates_Plot(df, risk_owner_hazard, df_interaction=None):
     # Add a shape for visual emphasis on the other axis
     fig.add_shape(
         type="rect",  # Add a rectangle shape
-        x0=0.08, x1=0.6,  # Span a small range around the first axis
-        y0=-.1, y1=1.25,
+        x0=0.08, x1=.65,  # Span a small range around the first axis
+        y0=-.1, y1=1.17,
         xref="paper", yref="paper",  # Reference the entire figure's dimensions
         fillcolor="lightgrey",  # Choose a subtle fill color
         opacity=0.5,  # Make the fill semi-transparent
@@ -110,10 +134,34 @@ def Parallel_Coordinates_Plot(df, risk_owner_hazard, df_interaction=None):
         line_width=0,
     )
 
+    # Add a shape for visual emphasis on the other axis
+    fig.add_shape(
+        type="rect",  # Add a rectangle shape
+        x0=0.66, x1=.78,  # Span a small range around the first axis
+        y0=-.1, y1=1.17,
+        xref="paper", yref="paper",  # Reference the entire figure's dimensions
+        fillcolor="lightgrey",  # Choose a subtle fill color
+        opacity=0.5,  # Make the fill semi-transparent
+        layer="below",  # Ensure the shape is below the data lines
+        line_width=0,
+    )
+
+    # # Add a shape for visual emphasis on the other axis
+    # fig.add_shape(
+    #     type="rect",  # Add a rectangle shape
+    #     x0=0.81, x1=1,  # Span a small range around the first axis
+    #     y0=-.1, y1=1.17,
+    #     xref="paper", yref="paper",  # Reference the entire figure's dimensions
+    #     fillcolor="lightgrey",  # Choose a subtle fill color
+    #     opacity=0.5,  # Make the fill semi-transparent
+    #     layer="below",  # Ensure the shape is below the data lines
+    #     line_width=0,
+    # )
+
     # Add an annotation for the first axis if needed to label it as 'Strategy Options'
     fig.add_annotation(
         x=0,  # Position at the start
-        y=1.15,  # Slightly above the plot
+        y=1.1,  # Slightly above the plot
         text="<b>Pathway Options</b>",  # Custom text
         showarrow=False,  # No arrow needed
         xref="paper",
@@ -125,9 +173,22 @@ def Parallel_Coordinates_Plot(df, risk_owner_hazard, df_interaction=None):
 
     # Add an annotation for the first axis if needed to label it as 'Objective performance'
     fig.add_annotation(
-        x=0.08 + (.6 - 0.08) / 2,  # Position at the start
-        y=1.15,  # Slightly above the plot
+        x=0.08 + (.65 - 0.08) / 2,  # Position at the start
+        y=1.1,  # Slightly above the plot
         text="<b>Objectives</b>",  # Custom text
+        showarrow=False,  # No arrow needed
+        xref="paper",
+        yref="paper",
+        font=dict(size=12, color="black"),  # Make the font bold
+        xanchor="center",
+        yanchor="bottom",
+    )
+
+    # Add an annotation for the first axis if needed to label it as 'Objective performance'
+    fig.add_annotation(
+        x=0.66 + (.78 - 0.66) / 2,  # Position at the start
+        y=1.1,  # Slightly above the plot
+        text="<b>Performance</b>",  # Custom text
         showarrow=False,  # No arrow needed
         xref="paper",
         yref="paper",
@@ -150,56 +211,9 @@ def Parallel_Coordinates_Plot(df, risk_owner_hazard, df_interaction=None):
     #     ax=0,  # Horizontal offset
     #     ay=-50  # Negative value for downward arrow (adjust the length as needed)
     # )
-
-    pathways_numbers = df[risk_owner_hazard].unique()
-
-    table_inputs = pd.DataFrame({
-        risk_owner_hazard: pathways_numbers,
-        'no_interaction': [100] * len(pathways_numbers),
-        'interaction': [100] * len(pathways_numbers),
-    })
-    table_inputs = table_inputs.sort_values(by=risk_owner_hazard, ascending=True)
-
-    annotation_text = "X% of realisations for each pathway<br>satisfy selected objective ranges..."
-
-    fig.add_annotation(
-        x=0.95,  # Centered horizontally
-        y=1.15,  # Positioned above the table
-        xref="paper",
-        yref="paper",
-        text=annotation_text,
-        showarrow=False,
-        font=dict(size=14, color="black"),
-        align="center"
+    fig.update_layout(
+        autosize=True,  # Allows the figure to resize based on the enclosing HTML element's size
+        # margin=dict(l=50, r=50, t=50, b=20)  # Adjust margins to ensure content fits well; customize as needed
     )
 
-    # Normalize function (assuming values are in 0 to 100 range)
-    def normalize_to_color(value, scale):
-        # Convert percentage to a 0-1 scale
-        normalized_value = value / 100
-        # Determine the index in the colorscale
-        index = min(int(normalized_value / 0.2), len(scale) - 1)
-        return scale[index]
-
-    # Apply the color mapping to a column (e.g., 'no_interaction')
-    colors_no_interaction = table_inputs['no_interaction'].apply(lambda x: normalize_to_color(x, COLORSCALE)).tolist()
-
-    # Placeholder: Repeat the process for 'interaction' column or any other column as needed
-    colors_interaction = table_inputs['interaction'].apply(lambda x: normalize_to_color(x, COLORSCALE)).tolist()
-
-
-    fig.add_trace(
-        go.Table(
-            header=dict(values=[f'{ROH_DICT_INV[risk_owner_hazard]} pathway options', 'Ratio (%) [no interactions]',
-                                'Ratio (%) [with interactions]']),
-            cells=dict(
-                values=[table_inputs[risk_owner_hazard],
-                        table_inputs['no_interaction'].apply(lambda x: f'{x:.2f}%'),
-                        table_inputs['interaction'].apply(lambda x: f'{x:.2f}%')],
-            fill_color=[['white'] * len(table_inputs), colors_no_interaction, colors_interaction],),
-
-            domain=dict(y=[0, 1])  # Adjust the domain as needed
-        ),
-        row=1, col=2
-    )
     return fig

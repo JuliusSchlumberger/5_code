@@ -31,7 +31,7 @@ def get_tipping_points(df, mapping_dict, string_output_path, target_roh, interac
         # print(new_df[new_df.Value.str.contains('&100')])
 
 
-        for metric in PERFORMANCE_METRICS_LIST:
+        for metric in [PERFORMANCE_METRICS_LIST[1]]:
             metric_df = calculate_tipping_point_metrics(new_df, metric).reset_index()
             metric_df['performance_metric'] = metric
             metric_df['scenario_of_interest'] = scenario_str
@@ -43,6 +43,7 @@ def get_tipping_points(df, mapping_dict, string_output_path, target_roh, interac
             if interaction == None:
                 subset_sequences.to_csv(f'{string_output_path}/all_sequences_{target_roh}_{scenario_str}_{metric}.txt', sep=' ', index=False,
                                         header=False)
+                # print(subset_sequences)
             else:
                 subset_sequences.to_csv(f'{string_output_path}/all_sequences_{target_roh}_{scenario_str}_{metric}_{interaction}.txt', sep=' ',
                                         index=False,

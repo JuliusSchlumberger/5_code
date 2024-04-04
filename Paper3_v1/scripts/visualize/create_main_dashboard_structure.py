@@ -5,21 +5,68 @@ import dash_bootstrap_components as dbc
 
 from Paper3_v1.scripts.utilities.design_choices.main_dashboard_design_choices import PANEL_BACKGROUND,DASHBOARD_BACKGROUND, DASHBOARD_DIMENSIONS
 from Paper3_v1.scripts.utilities.design_choices.main_dashboard_texts import *
-from Paper3_v1.scripts.utilities.design_choices.main_dashboard_dropdowns import ROH_DICT, TIMEHORIZONS, SCENARIOS, CONFIDENCE, WHICH_OPTIONS, PERFORMANCE_METRICS
+from Paper3_v1.scripts.utilities.design_choices.main_dashboard_dropdowns import ROH_DICT, TIMEHORIZONS, SCENARIOS, CONFIDENCE, WHICH_OPTIONS, PERFORMANCE_METRICS, INTERACTION_VIZ
+from Paper3_v1.main_central_path_directions import DIRECTORY_MEASURE_LOGOS_GITHUB
 
 
 def create_main_dashboard_structure(app):
     app.layout = html.Div([
         html.H1(DASHBOARD_TITLE, style={'textAlign': 'center'}),
 
-        # New panel for General Comments
+        # # New panel for General Comments
+        # html.Div([
+        #     html.H2(DASHBOARD_EXPLANATION['title']),
+        #     # *[html.P(paragraph) for paragraph in DASHBOARD_EXPLANATION['body']]
+        #     html.P(DASHBOARD_EXPLANATION['body']
+        #         ),
+        # ], style={'backgroundColor': PANEL_BACKGROUND, 'padding': DASHBOARD_DIMENSIONS['padding'],
+        #           'marginBottom': DASHBOARD_DIMENSIONS['margin'], 'width': '100%'}),
+        # Flex container for the introduction and glossary
+        # html.Div([
+        #     # Introduction panel
+        #     html.Div([
+        #         html.H2(DASHBOARD_EXPLANATION['title']),
+        #         html.P(DASHBOARD_EXPLANATION['body']),
+        #     ], style={'backgroundColor': PANEL_BACKGROUND, 'padding': DASHBOARD_DIMENSIONS['padding'],
+        #               'marginBottom': DASHBOARD_DIMENSIONS['margin'], 'width': '70%', 'marginRight': '1%'}),
+        #
+        #     # Glossary panel
+        #     html.Div([
+        #         html.H2('Glossary'),
+        #         html.Ul([html.Li([html.B(f"{term}"), f": {definition}"]) for term, definition in GLOSSARY_TERMS.items()])
+        #     ], style={'backgroundColor': PANEL_BACKGROUND, 'padding': DASHBOARD_DIMENSIONS['padding'],
+        #               'marginBottom': DASHBOARD_DIMENSIONS['margin'], 'width': '29%'}),
+        #
+        # ], style={'display': 'flex', 'flexDirection': 'row'}),  # Flex container style
+        # Flex container for the three panels: introduction text, image, and glossary
         html.Div([
-            html.H2(DASHBOARD_EXPLANATION['title']),
-            # *[html.P(paragraph) for paragraph in DASHBOARD_EXPLANATION['body']]
-            html.P(DASHBOARD_EXPLANATION['body']
-                ),
-        ], style={'backgroundColor': PANEL_BACKGROUND, 'padding': DASHBOARD_DIMENSIONS['padding'],
-                  'marginBottom': DASHBOARD_DIMENSIONS['margin'], 'width': '100%'}),
+
+            # Introduction text panel
+            html.Div([
+                html.H2(DASHBOARD_EXPLANATION['title']),
+                html.P(DASHBOARD_EXPLANATION['body']),
+            ], style={'backgroundColor': PANEL_BACKGROUND, 'padding': DASHBOARD_DIMENSIONS['padding'],
+                      'marginBottom': DASHBOARD_DIMENSIONS['margin'], 'width': '40%', 'marginRight': '1%'}),
+
+            # Image panel
+            html.Div([
+                html.Img(src=f'{DIRECTORY_MEASURE_LOGOS_GITHUB}/Waasmodel.png', style={'width': '100%', 'marginBottom': DASHBOARD_DIMENSIONS['margin']}),  # Adjust src and style as needed
+                html.P("Visualization of the case study area as published in Haasnoot et al. (2012).", style={'textAlign': 'center'})
+            ], style={'backgroundColor': PANEL_BACKGROUND, 'padding': DASHBOARD_DIMENSIONS['padding'],
+                      'marginBottom': DASHBOARD_DIMENSIONS['margin'], 'width': '29%', 'marginRight': '1%'}),
+
+            # Adjusted for two columns inside
+
+            # Glossary panel
+            html.Div([
+                html.H2('Glossary'),
+                html.Ul(
+                    [html.Li([html.B(f"{term}"), f": {definition}"]) for term, definition in GLOSSARY_TERMS.items()])
+            ], style={'backgroundColor': PANEL_BACKGROUND, 'padding': DASHBOARD_DIMENSIONS['padding'],
+                      'marginBottom': DASHBOARD_DIMENSIONS['margin'], 'width': '29%'}),
+
+        ], style={'display': 'flex', 'flexDirection': 'row'}),  # Flex container style
+
 
         # Div for the left panel (Explanation and Interaction Buttons)
         html.Div([
@@ -55,7 +102,7 @@ def create_main_dashboard_structure(app):
 
                 dbc.Row([
                     dbc.Col([
-                        html.Label('c) Scenarios (multiple-choice)', className='mb-1')], width=10, )]),
+                        html.Label('c) Climate Scenarios (multiple-choice)', className='mb-1')], width=10, )]),
                 dbc.Row([
                     dbc.Col([
                         dcc.Checklist(id='scenarios',
@@ -134,6 +181,7 @@ def create_main_dashboard_structure(app):
                     dbc.Col(dbc.Button("?", id="tooltip-performance_metric"), width=1),
 
                 ], style={'marginBottom': '2vh'}),
+            html.Div(id='performance_explanation', style={'marginBottom': '5vh'}),
 
             ], style={'backgroundColor': PANEL_BACKGROUND, 'padding': DASHBOARD_DIMENSIONS['padding'],
                       'marginBottom': DASHBOARD_DIMENSIONS['margin'],
@@ -161,14 +209,17 @@ def create_main_dashboard_structure(app):
                     ], style={'marginBottom': '2vh'}),
                 dbc.Row([
                     dbc.Col([
-                        html.Label('b) Objective to explore interaction effects', className='mb-1')], width=8, ),
+                        html.Label('b) Explore interaction effects on...', className='mb-1')], width=8, ),
                 ]),
                 dbc.Row([
                     dbc.Col([
-                        dcc.Dropdown(id='interaction_objective_of_interest', ),
+                        dcc.Dropdown(id='interaction_plot_options',
+                                     options=[{'label': option, 'value': INTERACTION_VIZ[option]} for option in
+                                              INTERACTION_VIZ],
+                                     ),
                     ], style={'marginRight': '-1vw'}, width=8),
 
-                    dbc.Col(dbc.Button("?", id="tooltip-interaction_objective_of_interest"), width=1),
+                    dbc.Col(dbc.Button("?", id="tooltip-interaction_plot_of_interest"), width=1),
 
                 ], style={'marginBottom': '2vh'}),
 
@@ -178,7 +229,7 @@ def create_main_dashboard_structure(app):
 
             # Tooltips for the buttons
             dbc.Tooltip(TOOLTIP_TEXT['multi_sectoral_interactions'], target="tooltip-multi_sectoral_interactions"),
-            dbc.Tooltip(TOOLTIP_TEXT['interaction_objective_of_interest'], target="tooltip-interaction_objective_of_interest"),
+            dbc.Tooltip(TOOLTIP_TEXT['interaction_plot_of_interest'], target="tooltip-interaction_plot_of_interest"),
 
         ], style={'width': DASHBOARD_DIMENSIONS['left_panel_width'], 'display': 'inline-block',
                   'verticalAlign': 'top'}),
@@ -189,20 +240,39 @@ def create_main_dashboard_structure(app):
             html.Div([
                 # html.H2('Showing Options'),
                 html.Img(id='options-graph', style={'width': DASHBOARD_DIMENSIONS['figure_options']}),
+                html.Img(id='pathways_legend-image', src='',
+                         style={'height': DASHBOARD_DIMENSIONS['figure_legend']})
             ], style={'backgroundColor': PANEL_BACKGROUND, 'padding': DASHBOARD_DIMENSIONS['padding'],
-                      'marginBottom': DASHBOARD_DIMENSIONS['margin'], 'height': DASHBOARD_DIMENSIONS['options_panel']}),
+                      'marginBottom': DASHBOARD_DIMENSIONS['margin'], 'height': DASHBOARD_DIMENSIONS['options_panel'],
+                      'display': 'flex',  # This will enable flexbox for this container
+                      'flex-direction': 'column',  # This stacks the children vertically
+                      'align-items': 'center',  # This centers the children horizontally in the container
+                      'justify-content': 'center'
+                      # This centers the children vertically in the container, if you want equal spacing around them
+                      }),
 
             # Panel for Performance with figure
             html.Div([
                 # html.H2('Performance'),
                 dcc.Graph(id='performance-graph', style={'height': DASHBOARD_DIMENSIONS['figure_options'], 'maxHeight': '550px'}),
+                html.Img(id='performance_legend-image', src='',
+                         style={'height': DASHBOARD_DIMENSIONS['figure_legend'],
+
+                                })
             ], style={'backgroundColor': PANEL_BACKGROUND, 'padding': DASHBOARD_DIMENSIONS['padding'],
-                      'marginBottom': DASHBOARD_DIMENSIONS['margin'], 'height': DASHBOARD_DIMENSIONS['performance_panel']}),
+                      'marginBottom': DASHBOARD_DIMENSIONS['margin'], 'height': DASHBOARD_DIMENSIONS['performance_panel'],
+                      'display': 'flex',  # This will enable flexbox for this container
+                      'flex-direction': 'column',  # This stacks the children vertically
+                      'align-items': 'center',  # This centers the children horizontally in the container
+                      'justify-content': 'center'
+                      }),
 
             # Panel for Multi-risk interactions with figure
             html.Div([
                 # html.H2('Multi-risk interactions'),
-                html.Img(id='interactions-graph', style={'height': DASHBOARD_DIMENSIONS['figure_options_mr']}),
+                dcc.Graph(id='interactions-graph', style={'height': DASHBOARD_DIMENSIONS['figure_options'], 'maxHeight': '550px', 'display': 'none'}),  # Initially hidden
+                html.Img(id='interactions-image', src='', style={'height': DASHBOARD_DIMENSIONS['figure_options'], 'display': 'none'})  # Initially hidden
+
             ], style={'backgroundColor': PANEL_BACKGROUND, 'padding': DASHBOARD_DIMENSIONS['padding'], 'height': DASHBOARD_DIMENSIONS['multi_risk_panel']})
         ], style={'width': DASHBOARD_DIMENSIONS['right_panel_width'], 'display': 'inline-block', 'verticalAlign': 'top',
                   'marginLeft': DASHBOARD_DIMENSIONS['button_vdistance']}),

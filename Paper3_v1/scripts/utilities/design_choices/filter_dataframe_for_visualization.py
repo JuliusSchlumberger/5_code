@@ -12,7 +12,7 @@ from Paper3_v1.main_central_path_directions import DIRECTORY_AGGREGATED_PERFORMA
 from Paper3_v1.scripts.utilities.map_system_parameters import SECTOR_OBJECTIVES
 
 
-def filter_dataframe_for_visualization(df, risk_owner_hazard, timehorizon, scenarios, performance_metric, interactions_of_interest):
+def filter_dataframe_for_visualization(df, risk_owner_hazard, timehorizon, scenarios, performance_metric):
 
     # Filter the dataframe based on selections
     selected_scenarios = '&'.join(scenarios)
@@ -28,7 +28,7 @@ def filter_dataframe_for_visualization(df, risk_owner_hazard, timehorizon, scena
     filtered_df = df[
         (df['year'].isin([timehorizon])) &  # Assuming timehorizon is a single selection, not a list
         (df['scenario_of_interest'] == selected_scenarios) &
-        (df['performance_metric'] == performance_metric) &
+        (df['performance_metric'].isin(performance_metric)) &
         (df.objective_parameter.isin(SECTOR_OBJECTIVES[risk_owner_hazard]))
         ].copy()
 

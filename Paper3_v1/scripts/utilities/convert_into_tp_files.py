@@ -74,7 +74,7 @@ def convert_into_tp_files(subset, mapping_dict):
 
     for index, row in subset.iterrows():
         # print(row)
-        tp_value = row['year'] + 2030
+        tp_value = row['year'] + 2020
         sequence = row['Value']
         parts = sequence.split('&')
 
@@ -84,7 +84,6 @@ def convert_into_tp_files(subset, mapping_dict):
         if ampersand_count >= 1:
             measure_to_find_allocate_tp = parts[ampersand_count - 1]
 
-
             if measure_to_find_allocate_tp == '0':
                 identifier_measure = 'current'
 
@@ -93,7 +92,7 @@ def convert_into_tp_files(subset, mapping_dict):
                     identifier = '&'.join(str(num) for num in parts[:ampersand_count - 1]) + '&99'
                 else:
                     identifier = '&'.join(str(num) for num in parts[:ampersand_count-1]) + '&'
-                print(ampersand_count, sequence, measure_to_find_allocate_tp, identifier, mapping_dict[measure_to_find_allocate_tp])
+                # print(ampersand_count, sequence, measure_to_find_allocate_tp, identifier, mapping_dict[measure_to_find_allocate_tp])
 
                 identifier_measure = mapping_dict[measure_to_find_allocate_tp][identifier]
 

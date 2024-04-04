@@ -7,9 +7,8 @@ from PIL import Image
 from io import BytesIO
 import numpy as np
 
-def getImage(path):
-    response = requests.get(path)
-    img = Image.open(BytesIO(response.content))
+def getImage(local_path):
+    img = Image.open(local_path)
     return OffsetImage(np.array(img), zoom=0.03)
 
 def add_logos(axes):

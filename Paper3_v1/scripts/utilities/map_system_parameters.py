@@ -1,13 +1,5 @@
 
-#
-# SYSTEM_PARAMETERS_MAP = {
-# 'f_a_decision_value'='', 'DamAgr_f_tot', 'pathways_list_f_a',
-#  'd_a_decision_value', 'DamAgr_d_tot', 'pathways_list_d_a', 'revenue_agr',
-#  'f_u_decision_value', 'DamUrb_tot', 'pathways_list_f_u',
-#  'd_s_decision_value', 'DamShp_tot', 'pathways_list_d_s', 'sprink_riv',
-#  'sprink_gw',
-#
-# }
+
 RENAME_INPUTS_DICT = {
     'output': 'system_parameter',
     'portfolio': 'pw_combi',
@@ -21,25 +13,16 @@ SYSTEM_PARAMETERS_LIST = ['DamAgr_f_tot', 'cost_f_a',
 
 PATHWAYS_TIMING_LIST = ['pathways_list_f_a','pathways_list_d_a', 'pathways_list_f_u','pathways_list_d_s']
 
-OBJECTIVE_PARAMETER_DICT_old = {'DamAgr_f_tot':'AgrFlood_DamageReduction',
-                            'cost_f_a':'AgrFlood_DRM_cost',
-                            # 'DamAgr_d_tot':'AgrDrought_DamageReduction', # this is just damage, neglects land loss effect
-                            'cost_d_a':'AgrDrought_DRM_cost',
-                            'revenue_agr':'Agr_CropRevenue_change',
-                            'DamUrb_tot':'UrbFlood_DamageReduction',
-                            'cost_f_u':'UrbFlood_DRM_cost',
-                            'DamShp_tot':'ShpDrought_DamageReduction',
-                            'cost_d_s':'ShpDrought_DRM_cost'}
 
-OBJECTIVE_PARAMETER_DICT = {'DamAgr_f_tot':'AgrFlood_Damage',
-                            'cost_f_a':'AgrFlood_DRM_cost',
+OBJECTIVE_PARAMETER_DICT = {'DamAgr_f_tot':'Farmer_Structural_Damage',
+                            'cost_f_a':'Farmer_Flood_Measure_Costs',
                             # 'DamAgr_d_tot':'AgrDrought_DamageReduction', # this is just damage, neglects land loss effect
-                            'cost_d_a':'AgrDrought_DRM_cost',
-                            'revenue_agr':'Agr_CropLoss',
-                            'DamUrb_tot':'UrbFlood_Damage',
-                            'cost_f_u':'UrbFlood_DRM_cost',
-                            'DamShp_tot':'ShpDrought_Damage',
-                            'cost_d_s':'ShpDrought_DRM_cost'}
+                            'cost_d_a':'Farmer_Drought_Measure_Costs',
+                            'revenue_agr':'Crop_Loss',
+                            'DamUrb_tot':'Municipality_Structural_Damage',
+                            'cost_f_u':'Municipality_Measure_Costs',
+                            'DamShp_tot':'Shipping_Economic_Loss',
+                            'cost_d_s':'Shipping_Measure_Costs'}
 
 AXIS_LABELS = {}
 for key, element in OBJECTIVE_PARAMETER_DICT.items():
@@ -49,13 +32,25 @@ for key, element in OBJECTIVE_PARAMETER_DICT.items():
 
 BENCHMARK_CROP_REVENUE = 9.7
 
-BENCHMARK_GROUPS = {'from_baseline': ['AgrFlood_Damage', 'Agr_CropLoss', 'UrbFlood_Damage','ShpDrought_Damage'],
-                    'from_inputs': ['AgrDrought_DRM_cost', 'UrbFlood_DRM_cost','ShpDrought_DRM_cost', 'AgrFlood_DRM_cost' ]}
+BENCHMARK_GROUPS = {
+    'from_baseline': [
+        OBJECTIVE_PARAMETER_DICT['DamAgr_f_tot'],
+        OBJECTIVE_PARAMETER_DICT['revenue_agr'],
+        OBJECTIVE_PARAMETER_DICT['DamUrb_tot'],
+        OBJECTIVE_PARAMETER_DICT['DamShp_tot']
+    ],
+    'from_inputs': [
+        OBJECTIVE_PARAMETER_DICT['cost_f_a'],
+        OBJECTIVE_PARAMETER_DICT['cost_d_a'],
+        OBJECTIVE_PARAMETER_DICT['cost_f_u'],
+        OBJECTIVE_PARAMETER_DICT['cost_d_s']
+    ]
+}
 
-SECTOR_OBJECTIVES = {'flood_agr': ['AgrFlood_DRM_cost', 'AgrFlood_Damage', 'Agr_CropLoss', ],
-                             'drought_agr': ['AgrDrought_DRM_cost', 'Agr_CropLoss'],
-                             'flood_urb': ['UrbFlood_Damage', 'UrbFlood_DRM_cost'],
-                             'drought_shp': ['ShpDrought_DRM_cost', 'ShpDrought_Damage']}
+SECTOR_OBJECTIVES = {'flood_agr': [OBJECTIVE_PARAMETER_DICT['DamAgr_f_tot'], OBJECTIVE_PARAMETER_DICT['revenue_agr'], OBJECTIVE_PARAMETER_DICT['cost_f_a'], ],
+                             'drought_agr': [OBJECTIVE_PARAMETER_DICT['revenue_agr'], OBJECTIVE_PARAMETER_DICT['cost_d_a']],
+                             'flood_urb': [OBJECTIVE_PARAMETER_DICT['DamUrb_tot'], OBJECTIVE_PARAMETER_DICT['cost_f_u']],
+                             'drought_shp': [OBJECTIVE_PARAMETER_DICT['DamShp_tot'], OBJECTIVE_PARAMETER_DICT['cost_d_s']]}
 
 MEASURE_NUMBERS = {
             'no_measure': 100,
@@ -79,6 +74,8 @@ MEASURE_NUMBERS = {
             'f_local_protect': 18,
             'f_awareness_campaign': 19
         }
+
+
 INVERTED_MEASURE_NUMBERS = {value: key for key, value in MEASURE_NUMBERS.items()}
 
 

@@ -10,7 +10,7 @@ from Paper3_v1.scripts.utilities.design_choices.get_change_between_old_and_new i
 
 import plotly.graph_objects as go  # Import Plotly's graph_objects module
 
-def Stacked_Bar_Plot(df, risk_owner_hazard, sector_objectives, df_interaction=None):
+def Stacked_Bar_Plot(df, risk_owner_hazard, sector_objectives, figure_title, df_interaction=None):
     df = df[df[risk_owner_hazard] != 0]
     
     pivot_df,pivot_text_df = get_table_for_plot(df, risk_owner_hazard)
@@ -98,7 +98,7 @@ def Stacked_Bar_Plot(df, risk_owner_hazard, sector_objectives, df_interaction=No
             hover_value = hover_data_dict[int(risk_owner_value)].get(trace.name, '')
 
             # Customize the hover text; adjust the formatting as needed
-            hover_text = f"<b>{find_key_by_value_string(ROH_DICT, risk_owner_hazard)} pathway {risk_owner_value}</b><br>{trace.name}: {int(hover_value)} MEUR (normalized: {objective_value} between 0 (baseline) and 1 (best))"
+            hover_text = f"<b>{find_key_by_value_string(ROH_DICT, risk_owner_hazard)} pathway {risk_owner_value}</b><br>{trace.name}: {int(hover_value)} MEUR (baseline (no actions taken: tbc)"
             new_hovertemplate.append(hover_text)
 
         # Update the hovertemplate for the trace
@@ -123,20 +123,48 @@ def Stacked_Bar_Plot(df, risk_owner_hazard, sector_objectives, df_interaction=No
     # fig.update_traces(textangle=0)
 
     # Remove the x-tick labels
-    # fig.update_xaxes(showticklabels=False,title_text='')
+    fig.update_xaxes(showticklabels=False,title_text='')
 
     # Update layout for stacked bar
     fig.update_layout(barmode='relative')
 
     fig = add_measure_buttons(fig, y_axis_values, risk_owner_hazard)
+    # Add figure title
+    fig.update_layout(title={'text': figure_title,'y':.98, 'x':0.5, 'xanchor': 'center', 'yanchor': 'top'})
+
+    # Add arrows and text annotations
+    # Arrow pointing to the right (better than baseline)
+    fig.add_annotation(
+        x=0.3, y=-0.1,
+        text="Better than baseline",
+        showarrow=True,
+        arrowhead=2,
+        ax=-40,  # Adjust ax, ay for arrow length and direction
+        ay=0,
+        yshift=-50,  # Adjust to place the annotation below the plot
+        xanchor='right'  # Anchor text to the left of the arrow
+    )
+
+    # Arrow pointing to the left (worse than baseline)
+    fig.add_annotation(
+        x=-0.3, y=-0.1,
+        text="Worse than baseline",
+        showarrow=True,
+        arrowhead=2,
+        ax=40,  # Adjust ax, ay for arrow length and direction
+        ay=0,
+        yshift=-50,  # Adjust to place the annotation below the plot
+        xanchor='left'  # Anchor text to the right of the arrow
+    )
 
     fig.update_layout(
         autosize=True,  # Allows the figure to resize based on the enclosing HTML element's size
-        margin=dict(l=50, r=50, t=20, b=20)  # Adjust margins to ensure content fits well; customize as needed
+        margin=dict(l=50, r=50, t=50, b=20)  # Adjust margins to ensure content fits well; customize as needed
     )
 
     fig.update_xaxes(domain=[0.15, 1])  # Adjusting the domain can change the plotting area's width
     fig.update_yaxes(domain=[0.2, 1])  # Adjusting the domain can change the plotting area's height
+
 
 
     return fig

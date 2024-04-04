@@ -1,7 +1,11 @@
 from Paper3_v1.scripts.utilities.design_choices.main_dashboard_dropdowns import ROH_DICT_INV
 
-PANEL_BACKGROUND = '#e0e0e0'
-DASHBOARD_BACKGROUND = '#f0f0f0'
+PANEL_BACKGROUND = '#B3E5FC'
+DASHBOARD_BACKGROUND = '#E1F5FE'
+
+
+DASHBOARD_BACKGROUND = '#B3E5FC'
+PANEL_BACKGROUND = '#E1F5FE'
 
 DASHBOARD_DIMENSIONS = {
     'padding':  '1vw',
@@ -11,9 +15,10 @@ DASHBOARD_DIMENSIONS = {
     'margin': '1vh',
     'button_vdistance': '2vh',
     'figure_options': '64vw',
+    'figure_legend': '7vw',
     'figure_options_mr': '50vh',
     'options_panel': '600px',
-    'performance_panel': '600px',
+    'performance_panel': '800px',
     'multi_risk_panel': '500px'
 
 
@@ -42,7 +47,9 @@ COLORSCALE = [
 ]
 
 
-COLORSCALE_PCP = [[0, 'grey'],[.5, 'red'],  [1, 'red']]
+# COLORSCALE_PCP = [[0, 'grey'],[.5, 'red'],  [1, 'red']]
+COLORSCALE_PCP = [[.0, '#c3ea57' ],[.5, 'blue'],[.6, 'blue'],[.8, '#f3f3f3'], [1, '#fa8de0']]
+# COLORSCALE_PCP = ['fa8de0', 'f3f3f3', 'f3f3f3', 'c3ea57']
 
 MEASURE_COLORS = {
     list(ROH_DICT_INV.keys())[0]: ['#b3cde3', '#6497b1', '#005b96', '#03396c', '#011f4b', '#011a30'],
@@ -57,3 +64,47 @@ OBJECTIVE_COLORS = {
     list(ROH_DICT_INV.keys())[2]: ['#b2dfdb', '#4db6ac'],
     list(ROH_DICT_INV.keys())[3]: ['#cec3e6', '#6e63b3']
 }
+MEASURE_NUMBERS = {
+            'no_measure': 100,
+            'd_resilient_crops': 1,
+            'd_rain_irrigation': 2,
+            'd_gw_irrigation': 3,
+            'd_riv_irrigation': 4,
+            'd_soilm_practice': 5,
+            'd_multimodal_transport': 6,
+            'd_medium_ships': 7,
+            'd_small_ships': 8,
+            'd_dredging': 9,
+            'f_resilient_crops': 10,
+            'f_ditches': 11,
+            'f_local_support': 12,
+            'f_dike_elevation_s': 13,
+            'f_dike_elevation_l': 14,
+            'f_maintenance': 15,
+            'f_room_for_river': 16,
+            'f_wet_proofing_houses': 17,
+            'f_local_protect': 18,
+            'f_awareness_campaign': 19
+        }
+MEASURE_COLORS = {
+            '100': '#f3f3f3',
+            '1': '#ffcc99',
+            '2': '#ffaa66',
+            '3': '#ff8800',
+            '4': '#cc6e00',
+            '5': '#994c00',
+            '6':'#cec3e6',
+            '7': '#9d94cc',
+            '8': '#4e429f',
+            '9': '#2e2570',
+            '10': '#b3cde3',
+            '11': '#6497b1',
+            '12': '#03396c',
+            '13': '#011f4b',
+            '14': '#011a30',
+            '15': '#005b96',
+            '16': '#b2dfdb',
+            '17': '#00897b',
+            '18': '#00695c',
+            '19': '#004d40'
+        }

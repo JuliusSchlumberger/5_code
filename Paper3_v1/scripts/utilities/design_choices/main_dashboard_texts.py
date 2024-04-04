@@ -1,77 +1,105 @@
 from dash import html
 #
 
-DASHBOARD_TITLE = 'Dashboard to Evaluate Multi-Risk Pathways (Sectoral Risk Owner Perspective)'
-
-# DASHBOARD_EXPLANATION = {
-#     'title': 'Dashboard Explanation',
-#     'body': [
-#         "Designed for sectoral risk owners (e.g., farmers, shipping companies, housing companies), this dashboard aids in strategizing against future hazards. Key insights include:",
-#         html.Br(),
-#         "1. Exploring alternative pathway strategies.",
-#         html.Br(),
-#         "2. Assessing strategy performance across various scenarios and time horizons.",
-#         html.Br(),
-#         "3. Understanding the influence of other risk owners' strategies on one's own.",
-#         html.Br(), html.Br(),
-#         "Specify time horizons, climate scenarios, performance indicators, and strategies from other risk owners to explore strategic options."
-#     ]
-# }
+DASHBOARD_TITLE = 'Dashboard to Evaluate Pathways in a multi-risk system (Sectoral Risk Owner Perspective)'
 
 DASHBOARD_EXPLANATION = {
-    'title': 'Dashboard Explanation',
+    'title': 'Introduction',
     'body': [
-        "Designed for sectoral risk owners (e.g., farmers, shipping companies, housing companies), this dashboard aids in strategizing against future hazards. Key insights include:",
+        "This dashboard is designed to test how different visualizations can be used to for the evaluation of Disaster Risk Management pathways in a multi-risk setting."
+        "The dashboard is set in a synthetic case study. In the case study "
+        "three sectoral risk owners (farmer, shipping company and a municipality) want to identify pathways to adapt to increasing risk of floods and droughts due to climate change. "
+        "One of the main question is what are the most appropriate pathways for these sectoral risk owners, considering "
+        "the interactions between pathways of different sectoral risk owners. "
+        "The objective is to identify combination of pathways that serve all sectoral risk owners and minimize tradeoffs. ",
+        html.Br(),html.Br(),
+        "This dashboard is designed to support a sectoral risk owners in the evaluation of their pathway options. Key insights include:",
         html.Br(),
-        "1. Exploring alternative ",
-        html.Abbr("pathway",
-                  title="A sequence of actions or strategies aimed at achieving a specific goal.",
-                  style={'textDecoration': 'underline', 'textDecorationStyle': 'solid', 'color': 'blue'}),
-        " strategies.",
+        "1. Identify what alternative pathway options are on the table.",
         html.Br(),
-        "2. Assessing strategy performance across various scenarios and time horizons.",
+        "2. Assess the performance of different pathways across various scenarios and time horizons.",
         html.Br(),
-        "3. Understanding the influence of other risk owners' strategies on one's own.",
+        "3. Understand the influence of other risk owners' pathways on one's own.",
         html.Br(), html.Br(),
-        "Specify time horizons, climate scenarios, performance indicators, and strategies from other risk owners to explore strategic options."
+        "As a user, you will take the role of a sectoral risk owner and use the visualizations to extract some information relevant for evaluating pathways. "
+        "You can specify time horizons, climate scenarios, performance indicators of interest, and select what interactions with pathways from other risk owners should be explored.",
     ]
 }
 
+GLOSSARY_TERMS={
+    'Disaster Risk Management': 'Strategies and practices to reduce vulnerabilities and manage the impacts of natural hazards.',
+    'Pathway': 'A sequence of measures that are implemented to adjust to future changes.',
+    'Multi-Risk Setting': 'A context in which multiple hazards interact and impacts to and responses by different actors influence each other.',
+    'Sectoral Risk Owner': 'Individuals or entities responsible for managing risks in specific sectors, such as a shipping company, farmer, or municipality.',
+    'Climate Scenarios': 'Plausible time-series of e.g. precipitation intensity or river discharge for different warming scenarios. '
+                         'Multiple time-series per climate scenario to capture uncertainty and natural variability.',
+    'Performance': 'Evaluated regarding a set of criteria using indicators to deal with uncertainty in and across climate scenarios.',
+    'Trade-offs': 'Compromises made when choosing between two or more competing options.',
+    'Interactions': 'Pathways of different sectoral risk owners can interfere with or benefit from each other, leading to changes in performance or available options.'
+}
+
 OPTIONS = {
-    'title': '1. Pathway Options Overview',
+    'title': '1. Pathways Overview',
     'general_introduction': [
-        "The first visualization displays alternative pathways available to the sectoral risk owner. Filter the dataset by selecting relevant time horizons and uncertainty scenarios to evaluate these alternatives."
+        "In the first section of the dashboard you learn about your pathways options as sectoral risk owner to deal with a specific hazard. ",
+        html.Br(),
+        html.B('(1)'), " Explore what measures are part of the different pathways options.",
+        html.Br(),
+        html.B('(2)'), " Explore how the sequences of measures are implemented in the selected time horizon and under different climate scenarios.",
+        html.Br(),
+        html.Br(),
+         "Select your role as sectoral risk owner and respective parameters for the evaluation."
     ]
 }
 
 PERFORMANCE = {
     'title': '2. Pathways Performance Analysis',
     'general_introduction': [
-        "The second visualization highlights the performance of pathway options based on the specified time horizon and selected scenarios.",
+        "In the second section of the dashboard, you can explore the performance of the pathways in the selected time horizon and under different climate scenarios:",
         html.Br(),
-        "Choose a performance metric to guide your analysis."
-    ]
+        html.B('(1)'), " Explore the performance of different pathways options across the performance criteria.",
+        html.Br(),
+        html.B('(2)'), " Explore how the performance evaluation changes for differernt performance indicators. ",
+    ],
+    'general_explanation': "The performance of pathways is tested in a wide range of computational experiments. "
+                           "Instead of showing the results for all experiments, you can choose between different "
+                           "performance indicators, that aggregate the results of each performance criterion into fewer values.",
+    'detailed_explanation_CI': ["You selected 'Confidence Intervals' as an performance indicator. Accordingly, "
+                               "you can explore the certainty of results within the set of experiments.",
+                                html.Br(),html.Br(),
+                                "For example: If you want to be 95% certain about the achieved performance, 95% of all " 
+                                "experiments are considered and the worst performance across these experiments is shown. " 
+                                "It corresponds to the most conservative performance indication of the pathway. " 
+                                "Likewise, being 5% certain about the achieved performance, corresponds to an optimistic" 
+                                " perspective, where only the best 5% of the experiments are considered and the worst " 
+                                "performance across these scenarios is shown."],
+    'detailed_explanation_otherPerformance': "You selected 'Robustness Indicator' and an performance indicator. Here, " 
+                                             "we compute robustness across the realizations in terms of the mean results " 
+                                             "and the standard deviation across the computational experiments. As such, " 
+                                             "you don't get insights into the factual performance. Instead the values shown" 
+                                             "are indications which pathways have a preferred expected performance and a low variability.",
+    'nothing_selected': "Choose a performance indicator to guide your analysis."
 }
 
 MULTI_RISK = {
     'title': '3. Multi-Risk Interaction Insights',
     'general_introduction': [
-        "The third section delves into the interaction effects between different pathway combinations.", html.Br(),
-        html.B("(1)"), " Observe changes in the options and performance plots when considering interaction effects.", html.Br(),
-        html.B("(2)"), " The adjacent visualization reveals synergistic or trade-off effects of another risk owner's pathway on the performance of your pathways, focusing solely on direct interactions."
+        "In the third section, you can explore how your pathways options and performance are affected by other sectoral risk owner pathways:", html.Br(),
+        html.B("(1)"), " Observe changes in the pathways options when considering interaction effects.", html.Br(),
+        html.B("(2)"), " Observe changes in the performance when considering interaction effects."
     ]
 }
 
 
 
 TOOLTIP_TEXT = {
-    'risk_owner_hazard': 'Choose a risk owner and their relevant hazards to analyze potential pathways.',
+    'risk_owner_hazard': 'Choose a sectoral risk owner and their relevant hazards to analyze potential pathways.',
     'timehorizon': 'Select the time horizon for evaluating and comparing pathway outcomes.',
-    'scenarios': 'Choose one or more scenarios for analysis. Each scenario is weighted equally when assessing performance across multiple scenarios.',
+    'scenarios': 'Choose one or more climate scenarios for analysis. Each scenario is treated equally when assessing performance across multiple scenarios.',
     'confidence': 'Consider removing this option.',
     'pathways': 'Enables highlighting of specific pathways in the analysis, enhancing the visibility of their performance and interactions.',
     'which_option': 'Consider removing this option.',
-    'performance_metric': 'Select a performance metric for evaluating outcomes. Metrics aggregate performance variations under different futures (e.g., climate or interaction scenarios) into confidence intervals. Choose from optimistic (5% CI), expected (50% CI), or pessimistic (95% CI) perceptions.',
-    'multi_sectoral_interactions': 'Select other risk owners to examine their impact on your selected pathways and performance metrics.',
-    'interaction_objective_of_interest': 'Pick an objective pertinent to your risk owner and hazard to investigate specific interactions affecting pathways.'
+    'performance_metric': 'Select a performance indicator. Indicators aggregate variations under different futures (e.g., climate or interaction scenarios) into confidence intervals. Choose from optimistic (5% CI), expected (50% CI), or pessimistic (95% CI) perceptions.',
+    'multi_sectoral_interactions': 'Select other sectoral risk owner to examine their impact on your selected pathways and performance metrics.',
+    'interaction_plot_of_interest': 'Do you want to look at the interaction effects regarding the pathways options or the pathways performance?'
 }

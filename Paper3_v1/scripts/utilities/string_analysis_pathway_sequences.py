@@ -77,22 +77,24 @@ def process_string(s, result_dict, counter_dict):
         if num == '':
             continue
         else:
-            prefix = '&'.join(str(num) for num in parts[:no_pathway_change]) + '&'
+            prefix = '&'.join(str(number) for number in parts[:no_pathway_change]) + '&'
 
             # Extract the substring before the number
             if parts[no_pathway_change+1] == '99':
                 search_fix = prefix + '99'
             else:
                 search_fix = prefix
-
+            # Measure number is not yet listed in dictionary
             if num not in result_dict:
                 result_dict[num] = {}
                 counter_dict[num] = 0
                 result_dict[num].update({search_fix: f'{num}[{counter_dict[num]}]'})
-            else:
+            else: # Measure is already listed but specific pre-sequence is not there yet...
+                # ... and the measure looked at is not the last one,
                 if search_fix not in result_dict[num] and parts[no_pathway_change+1] != '99':
                     counter_dict[num] += 1
                     result_dict[num].update({search_fix: f'{num}[{counter_dict[num]}]'})
+                # ... and the measure looked at is the last one,
                 elif search_fix not in result_dict[num] and parts[no_pathway_change+1] == '99':
                     counter_dict[num] += 1
                     result_dict[num].update({search_fix: f'{num}[{counter_dict[num]}]'})

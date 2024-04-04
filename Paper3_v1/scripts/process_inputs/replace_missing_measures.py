@@ -1,7 +1,67 @@
 import pandas as pd
 
 
+
+
 def replace_missing_measures(df):
+
+    # Step 1: Find special rows meeting conditions and having the lowest 'Year' for each unique combination
+    special_rows = df[df['Value'].str.contains('&&') | df['Value'].str.endswith('&')]
+    grouped = special_rows.groupby(['pw_combi', 'cc_scenario', 'climvar', 'system_parameter'])
+    min_year_rows = grouped.apply(lambda x: x[x['year'] == x['year'].min()])
+
+    # Step 2 & 3: Modify the 'Value' column
+    replacement_strings_dict = {}
+
+    # Iterate over each row of the DataFrame using iterrows()
+    for index, row in df.iterrows():
+        key_in_dict = False
+        # Check the condition on 'system_parameter' and apply the corresponding replacement
+        if row['system_parameter'] == 'pathways_list_d_a':
+            replaced_measure = '1'
+        elif row['system_parameter'] == 'pathways_list_f_a':
+            replaced_measure = '10'
+
+        if row['system_parameter'] in ['pathways_list_d_a','pathways_list_f_a']:
+
+            # Check if the current key is a substring of row['Value']
+            for key in replacement_strings_dict.keys():
+                # print('key in dict', index, key)
+                key_in_dict = False
+
+                # Check if part of string has been stored
+                if key in row['Value']:
+                    # Replace occurrences of the key with its corresponding value in row['Value']
+                    # print('&&', row['Value'], row['Value'].replace(key, replacement_strings_dict[key]))
+                    row['Value'] = row['Value'].replace(key, replacement_strings_dict[key])
+                    # print(row['Value'])
+                    key_in_dict = True
+                    break  # A match was found, no need to keep looking
+
+            # If no part of the string was previously stored, add it to the dict and drop row which is not relevant for plotting pathways
+            if not key_in_dict:
+                original_value = row['Value']
+                if '&&' in row['Value']:
+                    # Modify row['Value'] as needed before adding to dict
+                    modified_value = row['Value'].replace('&&', f'&{replaced_measure}&')
+                elif row['Value'].endswith('&') and '&&' not in row['Value']: # if measure last measure is removed
+                    modified_value = row['Value'] + replaced_measure
+                else:
+                    break
+                replacement_strings_dict[original_value] = modified_value
+                row['Value'] = '999999999'
+
+            # Update the DataFrame with the modified value
+            df.at[index, 'Value'] = row['Value']
+        else:
+            pass
+
+    df = df[df.Value != '999999999']
+
+    return df, min_year_rows
+
+
+def replace_missing_measures_old_v2(df):
 
     # Step 1: Find special rows meeting conditions and having the lowest 'Year' for each unique combination
     special_rows = df[df['Value'].str.contains('&&') | df['Value'].str.endswith('&')]
@@ -27,7 +87,7 @@ def replace_missing_measures(df):
                         # Replace occurrences of the key with its corresponding value in row['Value']
                         # print('&&', row['Value'], row['Value'].replace(key, replacement_strings_dict[key]))
                         row['Value'] = row['Value'].replace(key, replacement_strings_dict[key])
-                        print(row['Value'])
+                        # print(row['Value'])
                         key_in_dict = True
                         break  # A match was found, no need to keep looking
 
@@ -37,7 +97,7 @@ def replace_missing_measures(df):
                     # Modify row['Value'] as needed before adding to dict
                     modified_value = row['Value'].replace('&&', '&1&') + '&100'
                     replacement_strings_dict[original_value] = modified_value
-                    print(modified_value)
+                    # print(modified_value)
                     # Update the row's 'Value' to the modified value
                     row['Value'] = modified_value
             elif row['Value'].endswith('&') and '&&' not in row['Value']: # if measure last measure is removed
@@ -45,7 +105,7 @@ def replace_missing_measures(df):
                 # print('at end &', row['Value'], row['Value'] + '1&100')
                 row['Value'] = row['Value'] + '1&100'
                 replacement_strings_dict[replaced_string] = row['Value'] + '&'  # for future rows which add additional measures
-                print(row['Value'])
+                # print(row['Value'])
             else:
                 pass
             # Update the DataFrame with the modified value
@@ -63,13 +123,13 @@ def replace_missing_measures(df):
     # df['Value'] = df.apply(
     #     lambda row: replace_value(row) if '&&' in row['Value'] or row['Value'].endswith('&') else row[
     #         'Value'], axis=1)
-    if len(list(replacement_strings_dict.keys())) > 0:
-        print(replacement_strings_dict)
+    # if len(list(replacement_strings_dict.keys())) > 0:
+    #     print(replacement_strings_dict)
         # print(error)
 
     return df, min_year_rows
 
-def replace_missing_measures_old(df):
+def replace_missing_measures_old_v1(df):
 
     # Step 1: Find special rows meeting conditions and having the lowest 'Year' for each unique combination
     special_rows = df[df['Value'].str.contains('&&') | df['Value'].str.endswith('&')]

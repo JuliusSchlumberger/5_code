@@ -11,9 +11,12 @@ FILE_PATH_ALL_PERFORMANCE = 'Paper3_v1/data/all_pathways_performance.csv'
 FILE_PATH_ALL_PATHWAYS_CHANGES = 'Paper3_v1/data/all_pathways_unique_changes.csv'
 FILE_PATH_ALL_REMOVED_MEASURES = 'Paper3_v1/data/all_pathways_removed_measures.csv'
 FILE_PATH_ALL_PATHWAYS_SECTORS = 'data/stage3_portfolios_'
+PATHWAYS_GENERATOR_FIGURES = 'Paper3_v1/figures/Pathways_Generator'
+LEGENDS_LOCATION = 'Paper3_v1/legends'
 
 
-DIRECTORY_MEASURE_LOGOS = 'https://raw.githubusercontent.com/JuliusSchlumberger/WaasMR/master/viz/logos'
+DIRECTORY_MEASURE_LOGOS_GITHUB = 'https://raw.githubusercontent.com/JuliusSchlumberger/WaasMR/master/viz'
+DIRECTORY_MEASURE_LOGOS = 'data/logos/'
 
 DIRECTORY_SYSTEM_PARAMETERS = 'Paper3_v1/data/system_parameters'
 DIRECTORY_TIMEHORIZON_PATHWAYS = 'Paper3_v1/data/pathways_timehorizon'
@@ -36,6 +39,7 @@ ROH_LIST = ['flood_agr', 'drought_agr', 'flood_urb', 'drought_shp']
 LIST_COLUMNS = ['climvar', 'pw_combi','objective_parameter','Value','year','scenario_of_interest']
 COLUMN_TYPES = {column_name: 'float32' if column_name in ['Value', 'year'] else 'category' for column_name in LIST_COLUMNS}
 MEASURE_LOGOS = {measure: f'{DIRECTORY_MEASURE_LOGOS}/{measure}.png' for measure in MEASURE_NUMBERS.keys()}
+MEASURE_LOGOS_GITHUB = {measure: f'{DIRECTORY_MEASURE_LOGOS_GITHUB}/logos/{measure}.png' for measure in MEASURE_NUMBERS.keys()}
 
 PATHWYAYS_SPECIFIER = {'flood_agr': 'f_a',
                        'drought_agr': 'd_a',

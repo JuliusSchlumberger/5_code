@@ -24,4 +24,4 @@ def create_pathways_map(sequence_txt, tipping_point_txt):
     pathway_map.assign_tipping_points(tipping_points)
     pathway_map.set_attribute("level", level_by_action)
 
-    return pathway_map, tipping_points
+    return pathway_map, tipping_points, sequence_graph

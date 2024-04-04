@@ -1,6 +1,6 @@
 from Paper3_v1.scripts.utilities.map_system_parameters import MEASURE_DICT
 from Paper3_v1.scripts.utilities.insert_linebreaks import insert_linebreak
-
+from plotly.subplots import make_subplots
 
 # Constants for legend layout
 start_x = 0.07  # Starting x position for the first item
@@ -35,7 +35,7 @@ def add_logos_legend(fig, legend_items):
                 sizey=0.05,  # Adjust size as needed
                 xanchor="center",
                 yanchor="middle"
-            )
+            ),
         )
 
         # Add measure name as annotation (text)
@@ -51,7 +51,7 @@ def add_logos_legend(fig, legend_items):
             showarrow=False,
             xanchor="left",
             yanchor="middle",
-            align="left"
+            align="left",
         )
 
         # Calculate the box dimensions
@@ -74,7 +74,7 @@ def add_logos_legend(fig, legend_items):
             size=14,
             color="black"
         ),
-        align="left"
+        align="left",
     )
 
     fig.add_shape(

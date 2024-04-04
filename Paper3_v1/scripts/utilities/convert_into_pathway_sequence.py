@@ -73,7 +73,6 @@ def convert_into_pathway_sequence(subset, mapping_dict):
                 pass
 
             else:
-
                 # identifier left
                 identifier_left = '&'.join(str(num) for num in parts[:no_pathway_change - 1]) + '&'
                 if parts[no_pathway_change+1] == '99':
@@ -86,7 +85,7 @@ def convert_into_pathway_sequence(subset, mapping_dict):
                 else:
                     replacement_left = mapping_dict[left_part][identifier_left]
                 # print(mapping_dict)
-                print(ampersand_count, sequence, right_part, left_part,parts[no_pathway_change], identifier_left)
+                # print(ampersand_count, sequence, right_part, left_part,parts[no_pathway_change], identifier_left)
                 replacement_right = mapping_dict[right_part][identifier_right]
 
                 from_measure.append(replacement_left)
