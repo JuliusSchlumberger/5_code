@@ -261,10 +261,10 @@ def create_main_dashboard_structure(app):
                                 })
             ], style={'backgroundColor': PANEL_BACKGROUND, 'padding': DASHBOARD_DIMENSIONS['padding'],
                       'marginBottom': DASHBOARD_DIMENSIONS['margin'], 'height': DASHBOARD_DIMENSIONS['performance_panel'],
-                      'display': 'flex',  # This will enable flexbox for this container
-                      'flex-direction': 'column',  # This stacks the children vertically
-                      'align-items': 'center',  # This centers the children horizontally in the container
-                      'justify-content': 'center'
+                      # 'display': 'flex',  # This will enable flexbox for this container
+                      # 'flex-direction': 'column',  # This stacks the children vertically
+                      # 'align-items': 'center',  # This centers the children horizontally in the container
+                      # 'justify-content': 'center'
                       }),
 
             # Panel for Multi-risk interactions with figure

@@ -74,7 +74,7 @@ def Heatmap(df, risk_owner_hazard, sector_objectives, figure_title, df_interacti
     )
 
     fig.update_xaxes(domain=[0.15, 1])  # Adjusting the domain can change the plotting area's width
-    fig.update_yaxes(domain=[0.2, 1])  # Adjusting the domain can change the plotting area's height
+    # fig.update_yaxes(domain=[0.2, 1])  # Adjusting the domain can change the plotting area's height
     # fig.update_layout(width=800, height=600)  # Adjust figure size
 
     # fig.add_annotation(dict(font=dict(color="black", size=14),

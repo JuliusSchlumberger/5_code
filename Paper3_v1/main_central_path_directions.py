@@ -13,6 +13,7 @@ FILE_PATH_ALL_REMOVED_MEASURES = 'Paper3_v1/data/all_pathways_removed_measures.c
 FILE_PATH_ALL_PATHWAYS_SECTORS = 'data/stage3_portfolios_'
 PATHWAYS_GENERATOR_FIGURES = 'Paper3_v1/figures/Pathways_Generator'
 LEGENDS_LOCATION = 'Paper3_v1/legends'
+LEGENDS_LOCATION_GITHUB = 'https://raw.githubusercontent.com/JuliusSchlumberger/5_code/master/Paper3_v1/legends'
 
 
 DIRECTORY_MEASURE_LOGOS_GITHUB = 'https://raw.githubusercontent.com/JuliusSchlumberger/WaasMR/master/viz'
