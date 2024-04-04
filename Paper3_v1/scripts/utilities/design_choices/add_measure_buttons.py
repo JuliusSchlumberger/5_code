@@ -16,7 +16,7 @@ def add_measure_buttons(fig, y_ticks, risk_owner_hazard):
                 source=img_path,
                 xref="paper",  # Use "paper" for relative positioning
                 yref="y",  # Use axis ID for aligning with specific ticks
-                x=.18,  # Adjust this value to position the image on the x-axis
+                x=.12,  # Adjust this value to position the image on the x-axis
                 y=str(int(y_tick) - 1),  # Align with a specific y-axis tick label
                 sizex=1,
                 sizey=1,
