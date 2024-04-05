@@ -52,16 +52,20 @@ def convert_into_pathway_sequence_old(subset, mapping_dict):
 
 
 
-def convert_into_pathway_sequence(subset, mapping_dict):
+def convert_into_pathway_sequence(subset, mapping_dict, roh):
     output_dict = {
         'from_measure': [],
-        'to_measure': []
+        'to_measure': [],
+        'pathway': [],
+        'check_sequ': []
     }
     from_measure = []
     to_measure = []
 
     for index, row in subset.iterrows():
         sequence = row['Value']
+        pathway =  str(int(row[roh]))
+
         parts = sequence.split('&')
 
         # Step 1: Count the & characters
@@ -75,26 +79,38 @@ def convert_into_pathway_sequence(subset, mapping_dict):
             else:
                 # identifier left
                 identifier_left = '&'.join(str(num) for num in parts[:no_pathway_change - 1]) + '&'
-                if parts[no_pathway_change+1] == '99':
-                    identifier_right = '&'.join(str(num) for num in parts[:no_pathway_change]) + '&99'
+                if identifier_left + right_part in output_dict['check_sequ'] and any(
+                        pathway in string for string in output_dict['pathway']):  # same sequence already processed
+                    pass
+                elif identifier_left + right_part in output_dict['check_sequ'] and not any(pathway in string for string in output_dict[
+                    'pathway']):  # sequence processed, but for different pathway
+                    index_pathway = output_dict['check_sequ'].index(identifier_left + right_part)
+                    output_dict['pathway'][index_pathway] += ';' + pathway
+                    pass
                 else:
-                    identifier_right = '&'.join(str(num) for num in parts[:no_pathway_change]) + '&'
+                    if parts[no_pathway_change+1] == '99':
+                        identifier_right = '&'.join(str(num) for num in parts[:no_pathway_change]) + '&99'
+                    else:
+                        identifier_right = '&'.join(str(num) for num in parts[:no_pathway_change]) + '&'
 
-                if left_part == '0':
-                    replacement_left = 'current'
-                else:
-                    replacement_left = mapping_dict[left_part][identifier_left]
-                # print(mapping_dict)
-                # print(ampersand_count, sequence, right_part, left_part,parts[no_pathway_change], identifier_left)
-                replacement_right = mapping_dict[right_part][identifier_right]
+                    if left_part == '0':
+                        replacement_left = 'current'
+                    else:
+                        replacement_left = mapping_dict[left_part][identifier_left]
+                    # print(mapping_dict)
+                    # print(ampersand_count, sequence, right_part, left_part,parts[no_pathway_change], identifier_left)
+                    replacement_right = mapping_dict[right_part][identifier_right]
 
-                from_measure.append(replacement_left)
-                to_measure.append(replacement_right)
-    output_dict['from_measure'] = from_measure
-    output_dict['to_measure'] = to_measure
+                    output_dict['from_measure'].append(replacement_left)
+                    output_dict['to_measure'].append(replacement_right)
+                    output_dict['check_sequ'].append(identifier_left + right_part)
+                    output_dict['pathway'].append(pathway)
+    # output_dict['from_measure'] = from_measure
+    # output_dict['to_measure'] = to_measure
 
     df_output = pd.DataFrame(output_dict)
     df_output = df_output.drop_duplicates()
+    df_output = df_output.drop(columns='check_sequ')
 
     return df_output
 

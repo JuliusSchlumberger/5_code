@@ -18,10 +18,13 @@ TIMEHORIZONS = {
 }
 
 SCENARIOS = {
-    'current': 'D',
-    '1.5 Deg warmer': 'G',
-    '4 Deg warmer': 'Wp'
+    'historic': 'D',
+    '1.5 Deg': 'G',
+    '4 Deg': 'Wp'
 }
+SCENARIOS_INV = {}
+for key, element in SCENARIOS.items():
+    SCENARIOS_INV[element] = key
 
 CONFIDENCE = {
     'risk averse': '95%',
@@ -29,11 +32,18 @@ CONFIDENCE = {
     'risk taking': '5%'
 }
 
+# PATHWAYS_TO_HIGHLIGHT = {
+#     'flood_agr': range(1,13),
+#     'drought_agr': range(1,9),
+#     'drought_shp': range(1,12),
+#     'flood_urb': range(1,18)
+# }
+
 PATHWAYS_TO_HIGHLIGHT = {
-    'flood_agr': range(1,13),
-    'drought_agr': range(1,9),
-    'drought_shp': range(1,12),
-    'flood_urb': range(1,18)
+    'flood_agr': range(1,8),
+    'drought_agr': range(1,8),
+    'drought_shp': range(1,8),
+    'flood_urb': range(1,8)
 }
 
 WHICH_OPTIONS = {

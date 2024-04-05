@@ -11,22 +11,21 @@ from Paper3_v1.scripts.utilities.design_choices.get_change_between_old_and_new i
 import plotly.graph_objects as go  # Import Plotly's graph_objects module
 
 def Stacked_Bar_Plot(df, risk_owner_hazard, sector_objectives, figure_title, df_interaction=None):
+    benchmark_values = df[df[risk_owner_hazard] == 0]
     df = df[df[risk_owner_hazard] != 0]
-    
-    pivot_df,pivot_text_df = get_table_for_plot(df, risk_owner_hazard)
-    
 
+    pivot_df,pivot_text_df = get_table_for_plot(df, risk_owner_hazard)
+    _, pivot_text_benchmark = get_table_for_plot(benchmark_values, risk_owner_hazard)
+    
+    print(pivot_text_benchmark)
     if df_interaction is not None:
         print('Interaction added')
-        pivot_df, pivot_text_df = get_table_for_plot(df, risk_owner_hazard)
 
+        interaction_benchmark_values = df_interaction[df_interaction[risk_owner_hazard] == 0]
         df_interaction = df_interaction[df_interaction[risk_owner_hazard] != 0]
 
         pivot_interaction, pivot_interaction_text = get_table_for_plot(df_interaction, risk_owner_hazard)
-        # print(df_interaction)
-        # print(pivot_df)
-        # print(pivot_interaction)
-        # print(error)
+        _, pivot_text_interaction_benchmark = get_table_for_plot(interaction_benchmark_values, risk_owner_hazard)
 
         # Calculate differences and add them as new columns
         pivot_interaction, objectives_with_interactions = get_change_between_old_and_new(pivot_df,
@@ -37,18 +36,21 @@ def Stacked_Bar_Plot(df, risk_owner_hazard, sector_objectives, figure_title, df_
                                                                          pivot_interaction_text,
                                                                          sector_objectives,risk_owner_hazard, normalized=False)
 
-        print(pivot_interaction_text)
+        # print(pivot_interaction_text)
     y_axis_values = pivot_df.index.values
 
     if df_interaction is None:
         plot_df = pivot_df
         text_df = pivot_text_df
+        text_df_benchmark = pivot_text_benchmark
         plot_objectives = sector_objectives
     elif df_interaction is not None:
         plot_df = pivot_interaction
         plot_df.index = plot_df[risk_owner_hazard]
         text_df = pivot_interaction_text
+        text_df_benchmark = pivot_text_interaction_benchmark
         text_df.index = text_df[risk_owner_hazard]
+        text_df_benchmark.index = text_df_benchmark[risk_owner_hazard]
         plot_objectives = objectives_with_interactions
 
 
@@ -85,6 +87,7 @@ def Stacked_Bar_Plot(df, risk_owner_hazard, sector_objectives, figure_title, df_
 
     # Convert hover_pivot to a dictionary for easier access
     hover_data_dict = text_df.to_dict('index')
+    hover_pivot_text_benchmark = text_df_benchmark.to_dict('index')
 
     # Update the hover template for each trace (bar segment) in the figure
     for trace in fig.data:
@@ -96,9 +99,12 @@ def Stacked_Bar_Plot(df, risk_owner_hazard, sector_objectives, figure_title, df_
 
             # Retrieve the corresponding hover value from hover_pivot
             hover_value = hover_data_dict[int(risk_owner_value)].get(trace.name, '')
+            # print(hover_pivot_text_benchmark)
+            # print(error)
+            hover_benchmark = hover_pivot_text_benchmark[0].get(trace.name, '')
 
             # Customize the hover text; adjust the formatting as needed
-            hover_text = f"<b>{find_key_by_value_string(ROH_DICT, risk_owner_hazard)} pathway {risk_owner_value}</b><br>{trace.name}: {int(hover_value)} MEUR (baseline (no actions taken: tbc)"
+            hover_text = f"<b>{find_key_by_value_string(ROH_DICT, risk_owner_hazard)} pathway {risk_owner_value}</b><br>{trace.name}: {int(hover_value)} (baseline: {int(hover_benchmark)}) MEUR"
             new_hovertemplate.append(hover_text)
 
         # Update the hovertemplate for the trace
@@ -134,21 +140,21 @@ def Stacked_Bar_Plot(df, risk_owner_hazard, sector_objectives, figure_title, df_
 
     # Add arrows and text annotations
     # Arrow pointing to the right (better than baseline)
-    fig.add_annotation(
-        x=0.3, y=-0.1,
-        text="Better than baseline",
-        showarrow=True,
-        arrowhead=2,
-        ax=-40,  # Adjust ax, ay for arrow length and direction
-        ay=0,
-        yshift=-50,  # Adjust to place the annotation below the plot
-        xanchor='right'  # Anchor text to the left of the arrow
-    )
+    # fig.add_annotation(
+    #     x=0.3, y=-0.05,
+    #     text="Better than baseline",
+    #     showarrow=True,
+    #     arrowhead=2,
+    #     ax=-40,  # Adjust ax, ay for arrow length and direction
+    #     ay=0,
+    #     yshift=-50,  # Adjust to place the annotation below the plot
+    #     xanchor='left'  # Anchor text to the left of the arrow
+    # )
 
     # Arrow pointing to the left (worse than baseline)
     fig.add_annotation(
-        x=-0.3, y=-0.1,
-        text="Worse than baseline",
+        x=.1, y=-0.1,
+        text="The shorter, the higher the performance",
         showarrow=True,
         arrowhead=2,
         ax=40,  # Adjust ax, ay for arrow length and direction
@@ -163,7 +169,7 @@ def Stacked_Bar_Plot(df, risk_owner_hazard, sector_objectives, figure_title, df_
     )
 
     fig.update_xaxes(domain=[0.15, 1])  # Adjusting the domain can change the plotting area's width
-    fig.update_yaxes(domain=[0.2, 1])  # Adjusting the domain can change the plotting area's height
+    # fig.update_yaxes(domain=[0.2, 1])  # Adjusting the domain can change the plotting area's height
 
 
 

@@ -25,6 +25,7 @@ def get_performance_across_interactions(df, rohs, outputfile_path):
     df[rohs] = df.pw_combi.str.split('_', expand=True)
     # print(df[df.flood_urb != '00'])
     # print(error)
+    mapping_dict = get_sequences(df)
 
     # No Interactions
     for target_roh in rohs:
@@ -43,7 +44,7 @@ def get_performance_across_interactions(df, rohs, outputfile_path):
         # Group by and aggregate with custom logic
         df_subset.index.names = ['new_index_name' if x == target_roh else x for x in df_subset.index.names]
         # print(df_subset)
-        mapping_dict = get_sequences(df_subset, outputfile_path, target_roh)
+        # mapping_dict = get_sequences(df_subset, outputfile_path, target_roh)
         get_tipping_points(df_subset, mapping_dict, outputfile_path, target_roh)
 
         # With interactions
@@ -70,6 +71,6 @@ def get_performance_across_interactions(df, rohs, outputfile_path):
             # Group by and aggregate with custom logic
             df_subset_i.index.names = ['new_index_name' if x == target_roh else x for x in df_subset_i.index.names]
 
-            mapping_dict = get_sequences(df_subset_i, outputfile_path, target_roh, interaction)
+            # mapping_dict = get_sequences(df_subset_i, outputfile_path, target_roh, interaction)
 
             get_tipping_points(df_subset_i, mapping_dict, outputfile_path, target_roh, interaction)

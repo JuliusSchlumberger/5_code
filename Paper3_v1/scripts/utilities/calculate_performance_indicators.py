@@ -8,7 +8,7 @@ def calculate_performance_metrics(df, group, metric, column_to_aggregate):
     elif metric == '95%':
         return df.groupby(['year', 'objective_parameter', 'pw_combi'])[column_to_aggregate].quantile(0.95)
     elif metric == 'average':
-        return df.groupby(['year', 'objective_parameter', 'pw_combi'])[column_to_aggregate].mean()
+        return df.groupby(['year', 'objective_parameter', 'pw_combi'])[column_to_aggregate].mean() * (1 + df.groupby(['year', 'objective_parameter', 'pw_combi'])[column_to_aggregate].std())
 
 def custom_percentile_agg(column, percentile):
     return np.percentile(column, percentile)

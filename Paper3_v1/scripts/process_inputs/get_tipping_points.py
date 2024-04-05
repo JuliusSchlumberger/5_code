@@ -18,9 +18,12 @@ def get_tipping_points(df, mapping_dict, string_output_path, target_roh, interac
         new_df = filtered_df.copy()
         new_df = new_df[new_df.Value != '0']
         new_df = new_df[new_df.Value != '0&99']
+
+        new_for_tps = new_df.copy()
+        new_for_sequences = new_df.copy()
         # Create a new column with the substring up until the last '&'
-        new_df['implementation_across_multi_risk'] = new_df['Value'].str.rsplit('&', n=1).str[0]
-        # new_df['implementation_across_multi_risk'] = new_df['Value']
+        new_for_tps['implementation_across_multi_risk'] = new_for_tps['Value'].str.rsplit('&', n=1).str[0]  # ensure that a tipping point to implement of new measure is same independent of which measure follows
+        new_for_sequences['implementation_across_multi_risk'] = new_for_sequences['Value']  # to ensure that we get every specific pathway using a specific combination
         # new_df['implementation_across_multi_risk'] = np.where(
         #     new_df['Value'].str.endswith('99'),  # Condition: Value ends with '99'
         #     new_df['Value'],  # If True: Keep the whole string
@@ -32,14 +35,18 @@ def get_tipping_points(df, mapping_dict, string_output_path, target_roh, interac
 
 
         for metric in [PERFORMANCE_METRICS_LIST[1]]:
-            metric_df = calculate_tipping_point_metrics(new_df, metric).reset_index()
+            metric_df = calculate_tipping_point_metrics(new_for_tps, metric).reset_index()
             metric_df['performance_metric'] = metric
             metric_df['scenario_of_interest'] = scenario_str
 
             system_parameter = f'pathways_list_{PATHWYAYS_SPECIFIER[target_roh]}'
             subset = metric_df[metric_df.system_parameter == system_parameter]
+            # print(subset.nunique())
+            metric_sequ_df = new_for_sequences.drop_duplicates(subset=['Value', 'system_parameter', target_roh])
+            subset_sequ = metric_sequ_df[metric_sequ_df.system_parameter == system_parameter]
+            # print(subset_sequ.nunique())
 
-            subset_sequences = convert_into_pathway_sequence(subset, mapping_dict)
+            subset_sequences = convert_into_pathway_sequence(subset_sequ, mapping_dict, target_roh)
             if interaction == None:
                 subset_sequences.to_csv(f'{string_output_path}/all_sequences_{target_roh}_{scenario_str}_{metric}.txt', sep=' ', index=False,
                                         header=False)

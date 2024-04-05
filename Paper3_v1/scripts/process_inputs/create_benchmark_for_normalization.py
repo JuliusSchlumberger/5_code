@@ -16,7 +16,6 @@ def create_benchmark_for_normalization(benchmark_df,benchmark_performance_file):
     for index, row in benchmark_df.iterrows():
         benchmark_df.loc[index] = row.replace(OBJECTIVE_PARAMETER_DICT)
 
-
     benchmark_df.rename(columns={'system_parameter': 'objective_parameter'}, inplace=True)
 
     timehorizon_df = get_timehorizons(benchmark_df)

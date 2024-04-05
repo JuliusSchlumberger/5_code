@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 import plotly.express as px
 import plotly.graph_objects as go  # Import Plotly's graph_objects module
 from Paper3_v1.scripts.utilities.design_choices.main_dashboard_dropdowns import PATHWAYS_TO_HIGHLIGHT, ROH_DICT,ROH_DICT_INV, SECTOR_OBJECTIVES_BUTTONS
-from Paper3_v1.scripts.utilities.design_choices.main_dashboard_texts import PERFORMANCE
+from Paper3_v1.scripts.utilities.design_choices.main_dashboard_texts import PERFORMANCE, DASHBOARD_EXPLANATION
 import base64
 from io import BytesIO
 
@@ -23,6 +23,7 @@ from Paper3_v1.scripts.visualize.Heatmap import Heatmap
 from Paper3_v1.scripts.visualize.Interaction_Heatmap import Interaction_Heatmap
 from Paper3_v1.scripts.utilities.filter_options import PERFORMANCE_METRICS_LIST
 from Paper3_v1.scripts.utilities.design_choices.filter_dataframe_for_visualization import filter_dataframe_for_visualization
+from Paper3_v1.scripts.utilities.design_choices.main_dashboard_dropdowns import SCENARIOS_INV
 from Paper3_v1.main_central_path_directions import DIRECTORY_INTERACTIONS, DIRECTORY_OBJECTIVES_FOR_COUNT, DIRECTORY_PATH_PERFORMANCE, COLUMN_TYPES, DIRECTORY_PATHWAYS_GENERATOR, PATHWYAYS_SPECIFIER
 from Paper3_v1.scripts.visualize.update_pcp_counter import update_pcp_counter
 # from Paper3_v1.scripts.visualize.PathwaysMaps import PathwaysMaps
@@ -44,61 +45,12 @@ performance_df_dict = {
     ROH_LIST[2]: pd.read_csv(f'{DIRECTORY_INTERACTIONS}/performance_{ROH_LIST[2]}_no_interactions.csv'),
     ROH_LIST[3]: pd.read_csv(f'{DIRECTORY_INTERACTIONS}/performance_{ROH_LIST[3]}_no_interactions.csv')}
 
-# objectives_for_count_dict = {
-#     ROH_LIST[0]: pd.read_csv(f'{DIRECTORY_OBJECTIVES_FOR_COUNT}/objectives_for_count_no_interactions_{ROH_LIST[0]}.csv'),
-#     ROH_LIST[1]: pd.read_csv(f'{DIRECTORY_OBJECTIVES_FOR_COUNT}/objectives_for_count_no_interactions_{ROH_LIST[1]}.csv'),
-#     ROH_LIST[2]: pd.read_csv(f'{DIRECTORY_OBJECTIVES_FOR_COUNT}/objectives_for_count_no_interactions_{ROH_LIST[2]}.csv'),
-#     ROH_LIST[3]: pd.read_csv(f'{DIRECTORY_OBJECTIVES_FOR_COUNT}/objectives_for_count_no_interactions_{ROH_LIST[3]}.csv'),
-#     'flood_agr_flood_urb': pd.read_csv(f'{DIRECTORY_OBJECTIVES_FOR_COUNT}/objectives_for_count_combinations_flood_agr_flood_urb.csv'),
-#     'drought_shp_flood_urb': pd.read_csv(f'{DIRECTORY_OBJECTIVES_FOR_COUNT}/objectives_for_count_combinations_drought_shp_flood_urb.csv'),
-#     'drought_shp_flood_agr_flood_urb': pd.read_csv(f'{DIRECTORY_OBJECTIVES_FOR_COUNT}/objectives_for_count_combinations_drought_shp_flood_agr_flood_urb.csv'),
-#     'drought_shp_flood_agr': pd.read_csv(f'{DIRECTORY_OBJECTIVES_FOR_COUNT}/objectives_for_count_combinations_drought_shp_flood_agr.csv'),
-#     'drought_agr_flood_urb': pd.read_csv(f'{DIRECTORY_OBJECTIVES_FOR_COUNT}/objectives_for_count_combinations_drought_agr_flood_urb.csv'),
-#     'drought_agr_flood_agr_flood_urb': pd.read_csv(f'{DIRECTORY_OBJECTIVES_FOR_COUNT}/objectives_for_count_combinations_drought_agr_flood_agr_flood_urb.csv'),
-#     'drought_agr_flood_agr': pd.read_csv(f'{DIRECTORY_OBJECTIVES_FOR_COUNT}/objectives_for_count_combinations_drought_agr_flood_agr.csv'),
-#     'drought_agr_drought_shp_flood_urb': pd.read_csv(f'{DIRECTORY_OBJECTIVES_FOR_COUNT}/objectives_for_count_combinations_drought_agr_drought_shp_flood_urb.csv'),
-#     'drought_agr_drought_shp_flood_agr_flood_urb': pd.read_csv(f'{DIRECTORY_OBJECTIVES_FOR_COUNT}/objectives_for_count_combinations_drought_agr_drought_shp_flood_agr_flood_urb.csv'),
-#     'drought_agr_drought_shp_flood_agr': pd.read_csv(f'{DIRECTORY_OBJECTIVES_FOR_COUNT}/objectives_for_count_combinations_drought_agr_drought_shp_flood_agr.csv'),
-#     'drought_agr_drought_shp': pd.read_csv(f'{DIRECTORY_OBJECTIVES_FOR_COUNT}/objectives_for_count_combinations_drought_agr_drought_shp.csv'),
-# #
-# }
 performance_interactions_df_dict = {
-    # 'flood_agr_flood_urb': pd.read_csv('data/pathways_performance/all_pathways_combinations_flood_agr_flood_urb.csv'),
-    # 'drought_shp_flood_urb': pd.read_csv('data/pathways_performance/all_pathways_combinations_drought_shp_flood_urb.csv'),
-    # 'drought_shp_flood_agr_flood_urb': pd.read_csv('data/pathways_performance/all_pathways_combinations_drought_shp_flood_agr_flood_urb.csv'),
-    # 'drought_shp_flood_agr': pd.read_csv('data/pathways_performance/all_pathways_combinations_drought_shp_flood_agr.csv'),
     'flood_agr_flood_urb': pd.read_csv(f'{DIRECTORY_INTERACTIONS}/performance_flood_agr_combi_flood_agr&flood_urb.csv'),
     'drought_agr_flood_agr_flood_urb': pd.read_csv(f'{DIRECTORY_INTERACTIONS}/performance_flood_agr_combi_flood_agr&drought_agr&flood_urb.csv'),
     'drought_agr_flood_agr': pd.read_csv(f'{DIRECTORY_INTERACTIONS}/performance_flood_agr_combi_flood_agr&drought_agr.csv'),
-    # 'drought_agr_drought_shp_flood_urb': pd.read_csv('data/pathways_performance/all_pathways_combinations_drought_agr_drought_shp_flood_urb.csv'),
-    # 'drought_agr_drought_shp_flood_agr_flood_urb': pd.read_csv('data/pathways_performance/all_pathways_combinations_drought_agr_drought_shp_flood_agr_flood_urb.csv'),
-    # 'drought_agr_drought_shp_flood_agr': pd.read_csv('data/pathways_performance/all_pathways_combinations_drought_agr_drought_shp_flood_agr.csv'),
-    # 'drought_agr_drought_shp': pd.read_csv('data/pathways_performance/all_pathways_combinations_drought_agr_drought_shp.csv'),
            }
 
-# df_timehorizons_dict = {
-#     ROH_LIST[0]: pd.read_csv(f'data/aggregated_pathways_timehorizons/interactions/performance_{ROH_LIST[0]}.csv'),
-#     ROH_LIST[1]: pd.read_csv(f'data/aggregated_pathways_timehorizons/interactions/performance_{ROH_LIST[1]}.csv'),
-#     ROH_LIST[2]: pd.read_csv(f'data/aggregated_pathways_timehorizons/interactions/performance_{ROH_LIST[2]}.csv'),
-#     ROH_LIST[3]: pd.read_csv(f'data/aggregated_pathways_timehorizons/interactions/performance_{ROH_LIST[3]}.csv'),
-#     # 'flood_agr_flood_urb': pd.read_csv('data/aggregated_pathways_timehorizons/all_pathways_combinations_flood_agr_flood_urb.csv'),
-#     # 'drought_shp_flood_urb': pd.read_csv('data/aggregated_pathways_timehorizons/all_pathways_combinations_drought_shp_flood_urb.csv'),
-#     # 'drought_shp_flood_agr_flood_urb': pd.read_csv('data/aggregated_pathways_timehorizons/all_pathways_combinations_drought_shp_flood_agr_flood_urb.csv'),
-#     # 'drought_shp_flood_agr': pd.read_csv('data/aggregated_pathways_timehorizons/all_pathways_combinations_drought_shp_flood_agr.csv'),
-#     # 'drought_agr_flood_urb': pd.read_csv('data/aggregated_pathways_timehorizons/all_pathways_combinations_drought_agr_flood_urb.csv'),
-#     # 'drought_agr_flood_agr_flood_urb': pd.read_csv('data/aggregated_pathways_timehorizons/all_pathways_combinations_drought_agr_flood_agr_flood_urb.csv'),
-#     # 'drought_agr_flood_agr': pd.read_csv('data/aggregated_pathways_timehorizons/all_pathways_combinations_drought_agr_flood_agr.csv'),
-#     # 'drought_agr_drought_shp_flood_urb': pd.read_csv('data/aggregated_pathways_timehorizons/all_pathways_combinations_drought_agr_drought_shp_flood_urb.csv'),
-#     # 'drought_agr_drought_shp_flood_agr_flood_urb': pd.read_csv('data/aggregated_pathways_timehorizons/all_pathways_combinations_drought_agr_drought_shp_flood_agr_flood_urb.csv'),
-#     # 'drought_agr_drought_shp_flood_agr': pd.read_csv('data/aggregated_pathways_timehorizons/all_pathways_combinations_drought_agr_drought_shp_flood_agr.csv'),
-#     # 'drought_agr_drought_shp': pd.read_csv('data/aggregated_pathways_timehorizons/all_pathways_combinations_drought_agr_drought_shp.csv'),
-#            }
-# print(no_interaction_performance_dict)
-
-sequence_txt_dict = {'flood_agr': f'{DIRECTORY_PATHWAYS_GENERATOR}/all_sequences_pathways_list_f_a.txt',
-                     'drought_agr': f'{DIRECTORY_PATHWAYS_GENERATOR}/all_sequences_pathways_list_d_a.txt',
-                     'flood_urb': f'{DIRECTORY_PATHWAYS_GENERATOR}/all_sequences_pathways_list_f_u.txt',
-                     'drought_shp': f'{DIRECTORY_PATHWAYS_GENERATOR}/all_sequences_pathways_list_d_s.txt',}
 
 current_selections = {}
 interaction_sequences_dict = {}
@@ -114,26 +66,86 @@ column_types = {column_name: 'float32' if column_name in ['Value', 'year'] else 
 app = create_main_dashboard_structure(app)
 
 @app.callback(
-    Output('highlight_pathway', 'options'),
-    Input('risk_owner_hazard', 'value'))
-def set_pathways_options(selected_risk_hazard):
-    if selected_risk_hazard is None or selected_risk_hazard not in PATHWAYS_TO_HIGHLIGHT:
-        # Return empty list or default options if selected_risk_hazard is None or not found
-        return []
-    return [{'label': i, 'value': i} for i in PATHWAYS_TO_HIGHLIGHT[selected_risk_hazard]]
+    Output("options_figure-modal", "is_open"),
+    [Input("open-modal-options_figure", "n_clicks"), Input("close-modal-options_figure", "n_clicks")],
+    [State("options_figure-modal", "is_open")],
+)
+def toggle_modal_options_figure(n1, n2, is_open):
+    if n1 or n2:
+        return not is_open
+    return is_open
+
 
 @app.callback(
-    Output('performance_explanation', 'children'),
-    Input('performance_metric', 'value'))
-def update_explanation_text(performance_metric):
-    if performance_metric is None:
-        return [html.P(PERFORMANCE['nothing_selected'])]
-    else:
-        if performance_metric.endswith('%'):
-            return [html.P(PERFORMANCE['general_explanation']), html.P(PERFORMANCE['detailed_explanation_CI'])]
-        else:
-            return [html.P(PERFORMANCE['general_explanation']), html.P(PERFORMANCE['detailed_explanation_otherPerformance'])]
+    [Output("performance_figure-modal", "is_open"), Output("modal-body-performance_figure", "children")],
+    [Input("open-modal-performance_figure", "n_clicks"), Input('options', 'value'),
+     Input("close-modal-performance_figure", "n_clicks")],
+    [State("performance_figure-modal", "is_open")],
+)
+def toggle_modal_and_set_content_performance_figure(open_clicks, plot_type, close_clicks, is_open):
+    triggered_id = callback_context.triggered[0]['prop_id'].split('.')[0]
 
+    # Handle Modal Opening
+    if triggered_id == "open-modal-performance_figure" and open_clicks:
+        if plot_type:
+            text = DASHBOARD_EXPLANATION[plot_type]
+            return True, text  # Explicitly open the modal with the content
+        else:
+            return False, "Select a Plot type."  # Keep the modal closed if no plot type is selected
+
+    # Handle Modal Closing
+    elif triggered_id == "close-modal-performance_figure" and close_clicks:
+        return False, dash.no_update  # Explicitly close the modal without changing the content
+
+    return is_open, dash.no_update  # Default: Do not change the modal state or content
+
+@app.callback(
+    [Output("performance_analysis-modal", "is_open"), Output("modal-body-performance_analysis", "children")],
+    [Input("open-modal-performance_analysis", "n_clicks"), Input('performance_metric', 'value'),
+     Input("close-modal-performance_analysis", "n_clicks")],
+    [State("performance_analysis-modal", "is_open")],
+)
+def toggle_modal_and_set_content_performance_analysis(open_clicks, performance_metric, close_clicks, is_open):
+    triggered_id = callback_context.triggered[0]['prop_id'].split('.')[0]
+
+    # Handle Modal Opening
+    if triggered_id == "open-modal-performance_analysis" and open_clicks:
+        if performance_metric:
+            if performance_metric.endswith('%'):
+                text = DASHBOARD_EXPLANATION['detailed_explanation_CI']
+            else:
+                text = DASHBOARD_EXPLANATION['detailed_explanation_otherPerformance']
+            return True, text  # Explicitly open the modal with the content
+        else:
+            return False, "Select a Performance Indicator."  # Keep the modal closed if no plot type is selected
+
+    # Handle Modal Closing
+    elif triggered_id == "close-modal-performance_analysis" and close_clicks:
+        return False, dash.no_update  # Explicitly close the modal without changing the content
+
+    return is_open, dash.no_update  # Default: Do not change the modal state or content
+
+# @app.callback(
+#     Output('highlight_pathway', 'options'),
+#     Input('risk_owner_hazard', 'value'))
+# def set_pathways_options(selected_risk_hazard):
+#     if selected_risk_hazard is None or selected_risk_hazard not in PATHWAYS_TO_HIGHLIGHT:
+#         # Return empty list or default options if selected_risk_hazard is None or not found
+#         return []
+#     return [{'label': i, 'value': i} for i in PATHWAYS_TO_HIGHLIGHT[selected_risk_hazard]]
+#
+# @app.callback(
+#     Output('performance_explanation', 'children'),
+#     Input('performance_metric', 'value'))
+# def update_explanation_text(performance_metric):
+#     if performance_metric is None:
+#         return [html.P(PERFORMANCE['nothing_selected'])]
+#     else:
+#         if performance_metric.endswith('%'):
+#             return [html.P(PERFORMANCE['general_explanation']), html.P(PERFORMANCE['detailed_explanation_CI'])]
+#         else:
+#             return [html.P(PERFORMANCE['general_explanation']), html.P(PERFORMANCE['detailed_explanation_otherPerformance'])]
+#
 
 @app.callback(
     [Output('performance_legend-image', 'src'),
@@ -148,6 +160,35 @@ def update_legends(risk_owner_hazard):
 
     # Return the data URI for the image
     return f'data:image/png;base64,{encoded_image}', f'data:image/png;base64,{encoded_image}'
+
+# @app.callback(
+#     Output('performance-graph', 'figure'),
+#     [Input('risk_owner_hazard', 'value'),
+#      Input('timehorizon', 'value'),
+#      Input('scenarios', 'value'),
+#      Input('performance_metric', 'value'),
+#      Input('options', 'value'),
+#      ],
+#     [State('performance-graph', 'figure')]
+# )
+# def deselect_range(performance_metric, plot_type, existing_figure):
+#     if plot_type == 'PCP':
+#         initial_dimensions = existing_figure['data']['dimensions']
+#         # Update constraintrange for Dimension 1 based on button click
+#         updated_dimensions = initial_dimensions.copy()
+#
+#         for i in range(len(updated_dimensions)):
+#             if updated_dimensions[i]['label'] == 'performance_metric':
+#                 ranges = {'5%': 0,  '50%': .5,  'average': .6, '95%': 1}
+#                 updated_dimensions[i]["constraintrange"] = [ranges[performance_metric]-0.05,ranges[performance_metric]+0.05]
+#             # Toggle the constraintrange to demonstrate deselecting
+#             else:
+#                 # Remove the constraintrange, effectively resetting the selection
+#                 updated_dimensions[i].pop("constraintrange", None)
+#         existing_figure['data']['dimensions'] = updated_dimensions
+#         return existing_figure
+#     else:
+#         return existing_figure
 
 @app.callback(
     Output('multi_sectoral_interactions', 'options'),
@@ -166,17 +207,20 @@ def set_multi_sector_interaction_options(selected_risk_hazard):
     [Input('risk_owner_hazard', 'value'),
      Input('timehorizon', 'value'),
      Input('scenarios', 'value'),
-     Input('performance_metric', 'value'),
+     Input('highlight_pathway', 'value')
      ]
 )
-def update_options_graph(risk_owner_hazard, timehorizon, scenarios, performance_metric):
+def update_options_graph(risk_owner_hazard, timehorizon, scenarios, highlight_pathway):
     if any(input_value is None for input_value in
-           [risk_owner_hazard, timehorizon, scenarios, performance_metric]):
+           [risk_owner_hazard, timehorizon, scenarios]):
         return f''
 
     scenarios_str = '&'.join(scenarios)
 
-    figure_identifier = f'{risk_owner_hazard}_{scenarios_str}_{performance_metric}.png'
+    if highlight_pathway == None:
+        figure_identifier = f'{risk_owner_hazard}_allpathways_{scenarios_str}_50%_{timehorizon}.png'
+    else:
+        figure_identifier = f'Spotlight_{risk_owner_hazard}_pathway_{highlight_pathway}_{scenarios_str}_50%_{timehorizon}.png'
 
     # Encode the image to base64 string
     encoded_image = base64.b64encode(open(f'{PATHWAYS_GENERATOR_FIGURES}/{figure_identifier}', 'rb').read()).decode('ascii')
@@ -193,9 +237,10 @@ def update_options_graph(risk_owner_hazard, timehorizon, scenarios, performance_
      Input('scenarios', 'value'),
      Input('performance_metric', 'value'),
     Input('options', 'value'),
+    Input('highlight_pathway', 'value')
      ],
 )
-def update_performance_graph(risk_owner_hazard, timehorizon, scenarios, performance_metric, plot_type):
+def update_performance_graph(risk_owner_hazard, timehorizon, scenarios, performance_metric, plot_type, highlight_pathway):
     global current_selections
 
     # Return empty figure if not all needed inputs are specified
@@ -204,9 +249,13 @@ def update_performance_graph(risk_owner_hazard, timehorizon, scenarios, performa
         return go.Figure()
 
     else:
-        scenarios_title = ', '.join(scenarios)
+        if len(scenarios) == 1:
+            scenarios_title = f'{SCENARIOS_INV[scenarios[0]]} climate scenario'
+        else:
+            better_names = [SCENARIOS_INV[scen] for scen in scenarios]
+            scenarios_title = 'across multiple climate scenarios [' + ' & '.join(better_names) + ']'
 
-        figure_title = f'{plot_type} to explore pathways performance after the next {timehorizon} years for {scenarios_title} climate scenarios'
+        figure_title = f'Analyse Pathways Performance ({timehorizon} years; {scenarios_title})'
         #  Load Data for normal figure
         performance_df_of_interest = performance_df_dict[risk_owner_hazard]
         if plot_type == 'PCP':
@@ -222,7 +271,33 @@ def update_performance_graph(risk_owner_hazard, timehorizon, scenarios, performa
                                                          relevant_metrics)
 
         if plot_type == 'PCP':
-            return Parallel_Coordinates_Plot(df=filtered_df, risk_owner_hazard=risk_owner_hazard, figure_title=figure_title)
+            fig = Parallel_Coordinates_Plot(df=filtered_df, risk_owner_hazard=risk_owner_hazard, figure_title=figure_title)
+
+            initial_dimensions = list(fig['data'][0]['dimensions'])  # Create a copy of the dimensions
+
+            for i, dim in enumerate(initial_dimensions):
+                if dim['label'] == 'performance_metric':
+                    # Define your ranges mapping
+                    ranges = {'5%': 0, '50%': .5, 'average': .6, '95%': 1}
+                    target_range = ranges.get(performance_metric, 0.5)  # Default to 0.5 if not found
+
+                    # Set the constraintrange around the target value
+                    dim["constraintrange"] = [target_range - 0.05, target_range + 0.05]
+                elif dim['label'] == ROH_DICT_INV[risk_owner_hazard] and highlight_pathway:
+                    # Define your ranges mapping
+                    ranges = {'5%': 0, '50%': .5, 'average': .6, '95%': 1}
+                    target_range = ranges.get(performance_metric, 0.5)  # Default to 0.5 if not found
+
+                    # Set the constraintrange around the target value
+                    dim["constraintrange"] = [highlight_pathway - 0.05, highlight_pathway + 0.05]
+                else:
+                    # Remove any existing constraintrange
+                    dim.pop("constraintrange", None)
+
+            # Ensure to update the dimensions in the correct location
+            fig['data'][0]['dimensions'] = initial_dimensions
+
+            return fig
         elif plot_type == 'StackedBar':
             return Stacked_Bar_Plot(df=filtered_df, risk_owner_hazard=risk_owner_hazard,
                                     sector_objectives=SECTOR_OBJECTIVES[risk_owner_hazard], figure_title=figure_title)

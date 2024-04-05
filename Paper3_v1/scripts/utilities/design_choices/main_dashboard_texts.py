@@ -23,7 +23,46 @@ DASHBOARD_EXPLANATION = {
         html.Br(), html.Br(),
         "As a user, you will take the role of a sectoral risk owner and use the visualizations to extract some information relevant for evaluating pathways. "
         "You can specify time horizons, climate scenarios, performance indicators of interest, and select what interactions with pathways from other risk owners should be explored.",
-    ]
+    ],
+    'options_figure': 'This will be the explanation of what a Pathways Map is.',
+    'PCP': "A parallel coordinate plot is a way to visualize how each pathway performs across various criteria, "
+           "represented by several parallel axes."
+           "This plot can uncover relationships between performance criteria and identify clusters of similar pathways. "
+           "To read it, follow a line across the axes to see how the variables' values change for a single "
+           "data point. Comparing lines can help you spot similarities or differences among data points across "
+           "multiple dimensions.",
+    'Heatmap': 'A heatmap displays data as a matrix of colored cells, where each color represents a range of values. '
+               'The varying shades from light to dark (or through a spectrum of colors) indicate the magnitude of '
+               'some variable, such as temperature, frequency, or intensity. This visual representation helps identify '
+               'patterns, trends, and outliers at a glance. To read a heatmap, look at the color scale to understand '
+               'what each color means, then match the colors in the grid to see how the values change '
+               'across two dimensions.',
+    'StackedBar': 'A stacked bar chart shows the breakdown of multiple categories stacked on top of each other within'
+                  ' bars, where the length of each bar represents the total amount. In this specific chart, a shorter '
+                  'total length indicates better performance, allowing you to quickly compare overall performance '
+                  'across different pathways options. To interpret this chart, examine the lengths of the bars to '
+                  'gauge performance, and look at the segments within each bar to understand the contribution of '
+                  'each category to the total.',
+    'detailed_explanation_CI': ["The performance of pathways is tested in a wide range of computational experiments. "
+                           "Instead of showing the results for all experiments, you can choose between different "
+                           "performance indicators, that aggregate the results of each performance criterion into fewer values.",
+                            "You selected 'Confidence Intervals' as an performance indicator. Accordingly, "
+                           "you can explore the certainty of results within the set of experiments.",
+                            html.Br(),html.Br(),
+                            "For example: If you want to be 95% certain about the achieved performance, 95% of all " 
+                            "experiments are considered and the worst performance across these experiments is shown. " 
+                            "It corresponds to the most conservative performance indication of the pathway. " 
+                            "Likewise, being 5% certain about the achieved performance, corresponds to an optimistic" 
+                            " perspective, where only the best 5% of the experiments are considered and the worst " 
+                            "performance across these scenarios is shown."],
+'detailed_explanation_otherPerformance': ["The performance of pathways is tested in a wide range of computational experiments. "
+                           "Instead of showing the results for all experiments, you can choose between different "
+                           "performance indicators, that aggregate the results of each performance criterion into fewer values.",
+                          "You selected 'Robustness Indicator' and an performance indicator. Here, "
+                          "we compute robustness across the realizations in terms of the mean results "
+                          "and the standard deviation across the computational experiments. As such, "
+                          "you don't get insights into the factual performance. Instead the values shown"
+                          "are indications which pathways have a preferred expected performance and a low variability."],
 }
 
 GLOSSARY_TERMS={

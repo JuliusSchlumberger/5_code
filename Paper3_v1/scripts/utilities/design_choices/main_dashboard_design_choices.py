@@ -17,8 +17,8 @@ DASHBOARD_DIMENSIONS = {
     'figure_options': '64vw',
     'figure_legend': '7vw',
     'figure_options_mr': '50vh',
-    'options_panel': '600px',
-    'performance_panel': '800px',
+    'options_panel': '650px',
+    'performance_panel': '750px',
     'multi_risk_panel': '500px'
 
 

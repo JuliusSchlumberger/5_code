@@ -10,7 +10,7 @@ FILE_PATH_BENCHMARK_OUT = 'Paper3_v1/data/processed/benchmark_performance.csv'
 FILE_PATH_ALL_PERFORMANCE = 'Paper3_v1/data/all_pathways_performance.csv'
 FILE_PATH_ALL_PATHWAYS_CHANGES = 'Paper3_v1/data/all_pathways_unique_changes.csv'
 FILE_PATH_ALL_REMOVED_MEASURES = 'Paper3_v1/data/all_pathways_removed_measures.csv'
-FILE_PATH_ALL_PATHWAYS_SECTORS = 'data/stage3_portfolios_'
+FILE_PATH_ALL_PATHWAYS_SECTORS = 'Paper3_v1/data/stage3_portfolios_'
 PATHWAYS_GENERATOR_FIGURES = 'Paper3_v1/figures/Pathways_Generator'
 LEGENDS_LOCATION = 'Paper3_v1/legends'
 LEGENDS_LOCATION_GITHUB = 'https://raw.githubusercontent.com/JuliusSchlumberger/5_code/master/Paper3_v1/legends'
@@ -48,7 +48,7 @@ PATHWYAYS_SPECIFIER = {'flood_agr': 'f_a',
                        'drought_shp': 'd_s'}
 
 ALL_PATHWAYS = {'flood_agr': pd.read_csv(f'{FILE_PATH_ALL_PATHWAYS_SECTORS}flood_agr.txt',
-                                          names=['1', '2', '3', '4'],skiprows=[0], dtype='str'),
+                                          names=['1', '2', '3', '4'], dtype='str'),
                 'drought_agr': pd.read_csv(f'{FILE_PATH_ALL_PATHWAYS_SECTORS}drought_agr.txt',
                                          names=['1', '2', '3', '4'], dtype='str'),
                 'flood_urb': pd.read_csv(f'{FILE_PATH_ALL_PATHWAYS_SECTORS}flood_urb.txt',

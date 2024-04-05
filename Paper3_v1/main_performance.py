@@ -98,11 +98,6 @@ def get_performance_per_sector(input_directory, risk_owner_hazard_of_interest, b
     timehorizon_df = pd.read_csv(f'{input_directory}/objectives_{risk_owner_hazard_of_interest}.csv')
 
     performance_df = get_performance_values(timehorizon_df)
-    if risk_owner_hazard_of_interest == 'flood_agr':
-        print(performance_df[(performance_df.scenario_of_interest == 'D') &
-                             (performance_df.year == 20) &
-                             (performance_df.performance_metric == '5%')
-              ])
 
     get_normalized_performance(performance_df, benchmark_file_path,
                                f'{performance_directory_path}/performance_{risk_owner_hazard_of_interest}_normalized.csv')

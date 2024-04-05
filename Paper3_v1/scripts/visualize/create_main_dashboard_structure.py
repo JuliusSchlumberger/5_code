@@ -102,7 +102,9 @@ def create_main_dashboard_structure(app):
 
                 dbc.Row([
                     dbc.Col([
-                        html.Label('c) Climate Scenarios (multiple-choice)', className='mb-1')], width=10, )]),
+                        html.Label('c) Climate Scenarios', className='mb-1')], width=6, ),
+                    dbc.Col([
+                        html.Label('d) Highlight Pathway Alternative', className='mb-1')], width=6, )]),
                 dbc.Row([
                     dbc.Col([
                         dcc.Checklist(id='scenarios',
@@ -110,26 +112,9 @@ def create_main_dashboard_structure(app):
                                      inline=True, inputStyle={"marginRight": "1vh","marginLeft": "2vh"},
                                     value=[SCENARIOS[list(SCENARIOS.keys())[0]]]
                                       ),
-                    ], style={'marginRight': '0.5vw'}, width=10),
-
-                    dbc.Col(dbc.Button("?", id="tooltip-scenarios"), width=1),
-
-                ], style={'marginBottom': '2vh'}),
-
-                dbc.Row([
-                    dbc.Col([
-                        html.Label('d) Risk attitude', className='mb-1')], width=6, ),
-                    dbc.Col([
-                        html.Label('e) Highlight Pathway Alternative', className='mb-1')], width=6, )]),
-                dbc.Row([
-                    dbc.Col([
-                        dcc.Dropdown(id='confidence',
-                                     options=[{'label': option, 'value': CONFIDENCE[option]} for option in CONFIDENCE],
-                                     value=CONFIDENCE[list(CONFIDENCE.keys())[0]]
-                                     ),
                     ], style={'marginRight': '-1vw'}, width=5),
 
-                    dbc.Col(dbc.Button("?", id="tooltip-confidence"), width=1),
+                    dbc.Col(dbc.Button("?", id="tooltip-scenarios"), width=1),
 
                     dbc.Col([
                         dcc.Dropdown(id='highlight_pathway',
@@ -140,6 +125,19 @@ def create_main_dashboard_structure(app):
 
                 ], style={'marginBottom': '2vh'}),
 
+                # Button to open the modal
+                dbc.Row([
+                    dbc.Button("Show Explanation Options Figure Type", id="open-modal-options_figure", className="mb-3"),
+
+                    # The Modal
+                    dbc.Modal([
+                        dbc.ModalHeader(dbc.ModalTitle("Figure Explanation")),
+                        dbc.ModalBody(DASHBOARD_EXPLANATION['options_figure']),
+                        dbc.ModalFooter(
+                            dbc.Button("Close", id="close-modal-options_figure", className="ms-auto", n_clicks=0)
+                        ),
+                    ], id="options_figure-modal", is_open=False),  # Modal starts hidden
+                ], style={'marginBottom': '2vh'}),
             ], style={'backgroundColor': PANEL_BACKGROUND, 'padding': DASHBOARD_DIMENSIONS['padding'], 'marginBottom': DASHBOARD_DIMENSIONS['margin'],
                       'width': '100%', 'height': DASHBOARD_DIMENSIONS['options_panel'] }),
 
@@ -147,7 +145,6 @@ def create_main_dashboard_structure(app):
             dbc.Tooltip(TOOLTIP_TEXT['risk_owner_hazard'], target="tooltip-risk_owner_hazard"),
             dbc.Tooltip(TOOLTIP_TEXT['timehorizon'], target="tooltip-timehorizon"),
             dbc.Tooltip(TOOLTIP_TEXT['scenarios'], target="tooltip-scenarios"),
-            dbc.Tooltip(TOOLTIP_TEXT['confidence'], target="tooltip-confidence"),
             dbc.Tooltip(TOOLTIP_TEXT['pathways'], target="tooltip-pathways"),
 
             # Showing Performance
@@ -156,7 +153,7 @@ def create_main_dashboard_structure(app):
                 html.Div(PERFORMANCE['general_introduction'], style={'marginBottom': '5vh'}),
                 dbc.Row([
                     dbc.Col([
-                        html.Label('a) Best/worst options', className='mb-1')], width=6, ),
+                        html.Label('a) dev: Plot Alternatives', className='mb-1')], width=6, ),
                     dbc.Col([
                         html.Label('b) Performance Indicator', className='mb-1')], width=6, )]),
                 dbc.Row([
@@ -181,8 +178,30 @@ def create_main_dashboard_structure(app):
                     dbc.Col(dbc.Button("?", id="tooltip-performance_metric"), width=1),
 
                 ], style={'marginBottom': '2vh'}),
-            html.Div(id='performance_explanation', style={'marginBottom': '5vh'}),
+            # html.Div(id='performance_explanation', style={'marginBottom': '5vh'}),
+                dbc.Row([
+                    dbc.Button("Show Explanation Performance Analysis", id="open-modal-performance_analysis", className="me-2",
+                               n_clicks=0),
 
+                    dbc.Modal([
+                        dbc.ModalHeader(dbc.ModalTitle("Performance Analysis Explanation")),
+                        dbc.ModalBody(id="modal-body-performance_analysis"),  # Content will be set dynamically
+                        dbc.ModalFooter(
+                            dbc.Button("Close", id="close-modal-performance_analysis", className="ms-auto", n_clicks=0)
+                        ),
+                    ], id="performance_analysis-modal", is_open=False),
+                ], style={'marginBottom': '2vh'}),
+                dbc.Row([
+                    dbc.Button("Show Explanation Performance Figure", id="open-modal-performance_figure", className="me-2", n_clicks=0),
+
+                    dbc.Modal([
+                        dbc.ModalHeader(dbc.ModalTitle("Figure Explanation")),
+                        dbc.ModalBody(id="modal-body-performance_figure"),  # Content will be set dynamically
+                        dbc.ModalFooter(
+                            dbc.Button("Close", id="close-modal-performance_figure", className="ms-auto", n_clicks=0)
+                        ),
+                    ], id="performance_figure-modal", is_open=False),
+                ], style={'marginBottom': '2vh'}),
             ], style={'backgroundColor': PANEL_BACKGROUND, 'padding': DASHBOARD_DIMENSIONS['padding'],
                       'marginBottom': DASHBOARD_DIMENSIONS['margin'],
                       'width': '100%', 'height': DASHBOARD_DIMENSIONS['performance_panel']}),

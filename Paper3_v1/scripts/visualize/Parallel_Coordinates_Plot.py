@@ -12,12 +12,7 @@ import numpy as np
 from Paper3_v1.scripts.utilities.design_choices.add_measure_buttons import add_measure_buttons
 
 def Parallel_Coordinates_Plot(df, risk_owner_hazard, figure_title, df_interaction=None):
-    # df = df[df[risk_owner_hazard] != 0]
-    # Create a subplot layout with 1 row and 2 columns
-    fig = make_subplots(
-        rows=1, cols=2,
-        column_widths=[0.8, 0.2],
-        specs=[[{"type": "parcoords"}, {"type": "table"}]])
+    df = df[df[risk_owner_hazard] != 0]
 
     if df_interaction is None:
         pivot_df = df.pivot_table(
@@ -32,8 +27,7 @@ def Parallel_Coordinates_Plot(df, risk_owner_hazard, figure_title, df_interactio
         reset_pivot['Color'] = reset_pivot['performance_metric'].copy()
 
     else:
-        # df_interaction = df_interaction[df_interaction[risk_owner_hazard] != 0]
-
+        df_interaction = df_interaction[df_interaction[risk_owner_hazard] != 0]
 
         pivot_df1 = df.pivot_table(
             index=[risk_owner_hazard,'performance_metric'],
@@ -69,24 +63,24 @@ def Parallel_Coordinates_Plot(df, risk_owner_hazard, figure_title, df_interactio
     # Rename axis
     reset_pivot = reset_pivot.rename(columns=AXIS_LABELS)
     reset_pivot = reset_pivot.rename(columns=ROH_DICT_INV)
-
-    # print(reset_pivot)
+    # reset_pivot = reset_pivot.rename(columns={'performance_metric':'performance_metric'})
 
 
     dimensions = [
         dict(range=RANGE[col],
-            label=col, values=reset_pivot[col])
+            label=col, values=reset_pivot[col],)
         for col in reset_pivot.columns if col != 'Color'
     ]
 
-    fig.add_trace(
+    fig = go.Figure(data=
         go.Parcoords(
             line=dict(
                 color=reset_pivot['Color'],
                 colorscale=COLORSCALE_PCP,
             ),
             dimensions=dimensions,
-        ),col=1, row=1
+            unselected=dict(line=dict(color='grey', opacity=0.2))
+        )
     )
 
     # Add figure title
@@ -94,14 +88,14 @@ def Parallel_Coordinates_Plot(df, risk_owner_hazard, figure_title, df_interactio
 
     # Adjust axis labels
     # Use np.vectorize to apply the replacement
-    replace_function = np.vectorize(lambda x: { 0: 'best case', .5: 'expected', .6: 'average', 1: 'worst case'}.get(x, x))
+    replace_function = np.vectorize(lambda x: { 0: '5% confident', .5: '50% confident', .6: 'robustness indicator', 1: '95% confident'}.get(x, x))
 
     for dimension in fig.data[0]['dimensions']:
         if dimension['label'] == ROH_DICT_INV[risk_owner_hazard]:
             dimension['tickvals'] = reset_pivot[ROH_DICT_INV[risk_owner_hazard]].unique()
             # inverted_dict = {value: key for key, value in cc_scenarios_int.items()}
             dimension['ticktext'] = [str(x) for x in reset_pivot[ROH_DICT_INV[risk_owner_hazard]].unique()]
-        if dimension['label'] == 'performance_metric':
+        if dimension['label'] == 'performance_metric':    # Performance_metric
             dimension['tickvals'] = reset_pivot['performance_metric'].unique()
             # inverted_dict = {value: key for key, value in cc_scenarios_int.items()}
             dimension['ticktext'] = [str(x) for x in replace_function(reset_pivot['performance_metric'].unique())]
@@ -113,7 +107,7 @@ def Parallel_Coordinates_Plot(df, risk_owner_hazard, figure_title, df_interactio
     # Add a shape for visual emphasis on the first axis
     fig.add_shape(
         type="rect",  # Add a rectangle shape
-        x0=-.05, x1=0.07,  # Span a small range around the first axis
+        x0=-.07, x1=0.07,  # Span a small range around the first axis
         y0=-.1, y1=1.17,
         xref="paper", yref="paper",  # Reference the entire figure's dimensions
         fillcolor="lightgrey",  # Choose a subtle fill color
@@ -125,7 +119,7 @@ def Parallel_Coordinates_Plot(df, risk_owner_hazard, figure_title, df_interactio
     # Add a shape for visual emphasis on the other axis
     fig.add_shape(
         type="rect",  # Add a rectangle shape
-        x0=0.08, x1=.65,  # Span a small range around the first axis
+        x0=0.08, x1=.91,  # Span a small range around the first axis
         y0=-.1, y1=1.17,
         xref="paper", yref="paper",  # Reference the entire figure's dimensions
         fillcolor="lightgrey",  # Choose a subtle fill color
@@ -137,7 +131,7 @@ def Parallel_Coordinates_Plot(df, risk_owner_hazard, figure_title, df_interactio
     # Add a shape for visual emphasis on the other axis
     fig.add_shape(
         type="rect",  # Add a rectangle shape
-        x0=0.66, x1=.78,  # Span a small range around the first axis
+        x0=0.92, x1=1.07,  # Span a small range around the first axis
         y0=-.1, y1=1.17,
         xref="paper", yref="paper",  # Reference the entire figure's dimensions
         fillcolor="lightgrey",  # Choose a subtle fill color
@@ -173,9 +167,9 @@ def Parallel_Coordinates_Plot(df, risk_owner_hazard, figure_title, df_interactio
 
     # Add an annotation for the first axis if needed to label it as 'Objective performance'
     fig.add_annotation(
-        x=0.08 + (.65 - 0.08) / 2,  # Position at the start
+        x=0.08 + (.91 - 0.08) / 2,  # Position at the start
         y=1.1,  # Slightly above the plot
-        text="<b>Objectives</b>",  # Custom text
+        text="<b>Performance Criteria</b>",  # Custom text
         showarrow=False,  # No arrow needed
         xref="paper",
         yref="paper",
@@ -186,9 +180,9 @@ def Parallel_Coordinates_Plot(df, risk_owner_hazard, figure_title, df_interactio
 
     # Add an annotation for the first axis if needed to label it as 'Objective performance'
     fig.add_annotation(
-        x=0.66 + (.78 - 0.66) / 2,  # Position at the start
+        x=0.92 + (1.07 - 0.92) / 2,  # Position at the start
         y=1.1,  # Slightly above the plot
-        text="<b>Performance</b>",  # Custom text
+        text="<b>Performance Indicator</b>",  # Custom text
         showarrow=False,  # No arrow needed
         xref="paper",
         yref="paper",
@@ -212,7 +206,7 @@ def Parallel_Coordinates_Plot(df, risk_owner_hazard, figure_title, df_interactio
     #     ay=-50  # Negative value for downward arrow (adjust the length as needed)
     # )
     fig.update_layout(
-        autosize=True,  # Allows the figure to resize based on the enclosing HTML element's size
+        # autosize=True,  # Allows the figure to resize based on the enclosing HTML element's size
         # margin=dict(l=50, r=50, t=50, b=20)  # Adjust margins to ensure content fits well; customize as needed
     )
 
