@@ -217,7 +217,7 @@ def decision_tree(input_file, sector, button_path):
 
 sectors = ['flood_agr', 'drought_agr', 'flood_urb', 'drought_shp']
 input_file = 'Paper3_v1/data/stage3_portfolios_'
-button_path = 'Paper3_v1/data/logos/colorized'
-# button_path = 'https://raw.githubusercontent.com/JuliusSchlumberger/WaasMR/master/viz/logos'
+# button_path = 'Paper3_v1/data/logos/colorized'
+button_path = 'https://raw.githubusercontent.com/JuliusSchlumberger/5_code/master/Paper3_v1/data/logos/colorized'
 for sector in sectors:
     decision_tree(f'{input_file}{sector}.txt',sector, button_path)
