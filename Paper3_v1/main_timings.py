@@ -40,7 +40,7 @@ def create_timing_sets(set_of_model_outputs_files,specifier, pathway_sets_direct
     timing_removed_df = pd.concat(timing_removed_dfs, ignore_index=True)
     timing_removed_df.to_csv(f'{pathway_sets_directory}/removed_timings/pathways_removed_measures_set{specifier}.csv', index=False)
 
-def combine_all_pathways_sets(directory_path, outputfile_path, removed_measures_path):
+def combine_all_pathways_sets(directory_path,rohs, outputfile_path,filter_conditions, removed_measures_path):
     # List to hold DataFrames
     dfs = []
     directory_paths = [directory_path, f'{directory_path}/removed_timings']
@@ -65,6 +65,15 @@ def combine_all_pathways_sets(directory_path, outputfile_path, removed_measures_
 
     # Concatenate all DataFrames in the list
     combined_df = pd.concat(dfs, ignore_index=True)
+
+    combined_df[rohs] = combined_df.pw_combi.str.split('_', expand=True).astype(int)
+
+    # Apply Filter
+    # Here we do a simple manual filtering but of course any sort of filtering could be used.
+    for risk_owner in rohs:
+        combined_df = combined_df[combined_df[risk_owner].isin(filter_conditions[risk_owner])]
+
+    # Save file
     combined_df.to_csv(removed_measures_path, index=False)
 
 def create_sequences_tipping_points(input_file_path, output_file_path):

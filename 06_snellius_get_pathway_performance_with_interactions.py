@@ -1,8 +1,8 @@
 from Paper3_v1.main_performance import get_pathways_performances_across_interactions
-from Paper3_v1.main_central_path_directions import DIRECTORY_PATH_PERFORMANCE, DIRECTORY_INTERACTIONS, ROH_LIST
+from Paper3_v1.main_central_path_directions import DIRECTORY_PATH_FILTERED, DIRECTORY_INTERACTIONS, ROH_LIST
 
 
-directory_path = DIRECTORY_PATH_PERFORMANCE
+directory_path = DIRECTORY_PATH_FILTERED
 outputfile_path = DIRECTORY_INTERACTIONS
 rohs = ROH_LIST
 

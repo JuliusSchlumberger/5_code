@@ -168,8 +168,20 @@ def Stacked_Bar_Plot(df, risk_owner_hazard, sector_objectives, figure_title, df_
         margin=dict(l=50, r=50, t=50, b=20)  # Adjust margins to ensure content fits well; customize as needed
     )
 
-    fig.update_xaxes(domain=[0.15, 1])  # Adjusting the domain can change the plotting area's width
+    fig.update_xaxes(domain=[0.25, 1])  # Adjusting the domain can change the plotting area's width
     # fig.update_yaxes(domain=[0.2, 1])  # Adjusting the domain can change the plotting area's height
+    fig.update_yaxes(title_text='')
+    fig.add_annotation(
+        x=-0.03,  # Adjust this value to move the label left or right
+        y=0.5,  # Adjust this value to move the label up or down
+        text=f'{ROH_DICT_INV[risk_owner_hazard]} pathway options',  # Your y-axis label text here
+        showarrow=False,
+        xref='paper',
+        yref='paper',
+        textangle=-90,  # Rotate text for vertical orientation
+        font=dict(size=14),  # Adjust font size as needed
+        align='center'
+    )
 
 
 

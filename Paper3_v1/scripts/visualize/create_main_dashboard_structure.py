@@ -258,8 +258,10 @@ def create_main_dashboard_structure(app):
             # Panel for Showing Options with figure
             html.Div([
                 # html.H2('Showing Options'),
-                html.Iframe(src=f'Paper3_v1/figures/decision_tree/stage3_portfolios_flood_agr.html', width='100%', height='600'),  # Adjust width and height as needed
+                # html.Iframe(src=f'https://raw.githubusercontent.com/JuliusSchlumberger/5_code/master/Paper3_v1/figures/decision_tree/stage3_portfolios_flood_agr.html', width='100%', height='600'),  # Adjust width and height as needed
                 # html.Img(id='options-graph', style={'width': DASHBOARD_DIMENSIONS['figure_options']}),
+                dcc.Graph(id='options-graph',
+                          style={'height': DASHBOARD_DIMENSIONS['figure_options'], 'maxHeight': '550px'}),
                 html.Img(id='pathways_legend-image', src='',
                          style={'height': DASHBOARD_DIMENSIONS['figure_legend']})
             ], style={'backgroundColor': PANEL_BACKGROUND, 'padding': DASHBOARD_DIMENSIONS['padding'],

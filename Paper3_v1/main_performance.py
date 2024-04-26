@@ -103,10 +103,21 @@ def get_performance_per_sector(input_directory, risk_owner_hazard_of_interest, b
                                f'{performance_directory_path}/performance_{risk_owner_hazard_of_interest}_normalized.csv')
 
 
-# def combine_all_performance_sets(directory_path, rohs, outputfile_path):
-#     create_directory_if_not_exists(outputfile_path)
-#
-#     load_and_aggregate_files(directory_path, rohs, outputfile_path)
+def filter_pathways(input_directory, risk_owner_hazard_of_interest,rohs, filter_conditions, filtered_directory_path):
+    create_directory_if_not_exists(filtered_directory_path)
+
+    performance_df = pd.read_csv(f'{input_directory}/performance_{risk_owner_hazard_of_interest}_normalized.csv')
+    performance_df[rohs] = performance_df.pw_combi.str.split('_', expand=True).astype(int)
+
+
+    # Apply Filter
+    # Here we do a simple manual filtering but of course any sort of filtering could be used.
+    for risk_owner in rohs:
+        performance_df = performance_df[performance_df[risk_owner].isin(filter_conditions[risk_owner])]
+
+    performance_df.to_csv(f'{filtered_directory_path}/performance_{risk_owner_hazard_of_interest}_normalized_filtered.csv')
+
+
 
 def get_pathways_performances_across_interactions(directory_path, rohs, outputfile_path):
     create_directory_if_not_exists(outputfile_path)

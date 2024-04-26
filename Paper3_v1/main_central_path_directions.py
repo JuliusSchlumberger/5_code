@@ -13,7 +13,7 @@ FILE_PATH_ALL_REMOVED_MEASURES = 'Paper3_v1/data/all_pathways_removed_measures.c
 FILE_PATH_ALL_PATHWAYS_SECTORS = 'Paper3_v1/data/stage3_portfolios_'
 PATHWAYS_GENERATOR_FIGURES = 'Paper3_v1/figures/Pathways_Generator'
 LEGENDS_LOCATION = 'Paper3_v1/legends'
-LEGENDS_LOCATION_GITHUB = 'https://raw.githubusercontent.com/JuliusSchlumberger/5_code/master/Paper3_v1/legends'
+LEGENDS_LOCATION_GITHUB = 'https://raw.githubusercontent.com/JuliusSchlumberger/5_code/master/Paper3_v1/legends/colorized'
 
 
 DIRECTORY_MEASURE_LOGOS_GITHUB = 'https://raw.githubusercontent.com/JuliusSchlumberger/WaasMR/master/viz'
@@ -24,6 +24,7 @@ DIRECTORY_TIMEHORIZON_PATHWAYS = 'Paper3_v1/data/pathways_timehorizon'
 DIRECTORY_TIMEHORIZON_PER_ROH = f'{DIRECTORY_TIMEHORIZON_PATHWAYS}/risk_owner_hazard'
 DIRECTORY_OBJECTIVES_FOR_COUNT = f'{DIRECTORY_TIMEHORIZON_PATHWAYS}/counts'
 DIRECTORY_PATH_PERFORMANCE = 'Paper3_v1/data/pathways_performance'
+DIRECTORY_PATH_FILTERED = 'Paper3_v1/data/filtered_pathways'
 DIRECTORY_INTERACTIONS = f'{DIRECTORY_PATH_PERFORMANCE}/interactions'
 
 DIRECTORY_PATH_PATHWAY_SETS = 'Paper3_v1/data/pathway_sets'
@@ -56,6 +57,14 @@ ALL_PATHWAYS = {'flood_agr': pd.read_csv(f'{FILE_PATH_ALL_PATHWAYS_SECTORS}flood
                 'drought_shp': pd.read_csv(f'{FILE_PATH_ALL_PATHWAYS_SECTORS}drought_shp.txt',
                                                          names=['1', '2', '3', '4'], dtype='str'),
                 }
+
+
+FILTER_CONDITIONS = {
+    ROH_LIST[0]: [0, 1, 3, 5, 7, 9, 11, 13],
+    ROH_LIST[1]: [0, 1, 3, 5, 6, 7, 8, 9],
+    ROH_LIST[2]: [0, 1, 3, 5, 7, 9, 11, 13],
+    ROH_LIST[3]: [0, 1, 2, 4, 5, 8, 9 ],
+}
 
 
 

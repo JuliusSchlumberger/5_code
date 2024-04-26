@@ -86,7 +86,7 @@ def Heatmap(df, risk_owner_hazard, sector_objectives, figure_title, df_interacti
         xaxis=dict(side='top')
     )
 
-    fig.update_xaxes(domain=[0.15, 1])  # Adjusting the domain can change the plotting area's width
+    fig.update_xaxes(domain=[0.25, 1])  # Adjusting the domain can change the plotting area's width
     fig.update_yaxes(title_text='')
     fig.add_annotation(
         x=-0.03,  # Adjust this value to move the label left or right

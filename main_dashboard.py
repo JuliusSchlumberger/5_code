@@ -3,6 +3,7 @@ import numpy as np
 from Paper3_v1.scripts.visualize.create_main_dashboard_structure import create_main_dashboard_structure
 import dash
 from dash import Input, Output, State,callback_context, dcc, html
+import plotly.io as pio
 
 from flask_caching import Cache
 import dash_bootstrap_components as dbc
@@ -202,31 +203,34 @@ def set_multi_sector_interaction_options(selected_risk_hazard):
     # print(selected_risk_hazard)
     return [{'label': i, 'value': ROH_DICT[i]} for i in filtered_options]
 
-# @app.callback(
-#     Output('options-graph', 'src'),
-#     [Input('risk_owner_hazard', 'value'),
-#      Input('timehorizon', 'value'),
-#      Input('scenarios', 'value'),
-#      Input('highlight_pathway', 'value')
-#      ]
-# )
-# def update_options_graph(risk_owner_hazard, timehorizon, scenarios, highlight_pathway):
-#     if any(input_value is None for input_value in
-#            [risk_owner_hazard]):
-#         return f''
-#
-#     # scenarios_str = '&'.join(scenarios)
-#     #
-#     # if highlight_pathway == None:
-#     #     figure_identifier = f'{risk_owner_hazard}_allpathways_{scenarios_str}_50%_{timehorizon}.png'
-#     # else:
-#     figure_identifier = f'Paper3_v1/figures/decision_tree/stage3_portfolios_{risk_owner_hazard}.html'
-#
-#     # Encode the image to base64 string
-#     # encoded_image = base64.b64encode(open(f'{PATHWAYS_GENERATOR_FIGURES}/{figure_identifier}', 'rb').read()).decode('ascii')
-#
-#     # return 'data:image/png;base64,{}'.format(encoded_image)
-#     return figure_identifier
+@app.callback(
+    Output('options-graph', 'figure'),
+    [Input('risk_owner_hazard', 'value'),
+     Input('timehorizon', 'value'),
+     Input('scenarios', 'value'),
+     Input('highlight_pathway', 'value')
+     ]
+)
+def update_options_graph(risk_owner_hazard, timehorizon, scenarios, highlight_pathway):
+    if any(input_value is None for input_value in
+           [risk_owner_hazard]):
+        return go.Figure()
+
+    # scenarios_str = '&'.join(scenarios)
+    #
+    # if highlight_pathway == None:
+    #     figure_identifier = f'{risk_owner_hazard}_allpathways_{scenarios_str}_50%_{timehorizon}.png'
+    # else:
+    figure_identifier = f'Paper3_v1/figures/decision_tree/alternative_pathways_{risk_owner_hazard}.json'
+
+    with open(figure_identifier, 'r') as f:
+        fig = pio.from_json(f.read())
+
+    # Encode the image to base64 string
+    # encoded_image = base64.b64encode(open(f'{PATHWAYS_GENERATOR_FIGURES}/{figure_identifier}', 'rb').read()).decode('ascii')
+
+    # return 'data:image/png;base64,{}'.format(encoded_image)
+    return fig
 
 
 

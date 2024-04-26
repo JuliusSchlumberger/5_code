@@ -17,6 +17,10 @@ TIMEHORIZONS = {
     'next 100 years': 100
 }
 
+TIMEHORIZONS_INV = {}
+for key, element in TIMEHORIZONS.items():
+    TIMEHORIZONS_INV[element] = key
+
 SCENARIOS = {
     'historic': 'D',
     '1.5 Deg': 'G',

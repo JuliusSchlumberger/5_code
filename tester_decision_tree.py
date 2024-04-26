@@ -5,6 +5,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 import base64
 from Paper3_v1.scripts.utilities.map_system_parameters import MEASURE_DICT, MEASURE_EXPL
+from Paper3_v1.main_central_path_directions import FILTER_CONDITIONS
 
 # Permanently changes the pandas settings
 pd.set_option('display.max_rows', None)
@@ -22,9 +23,11 @@ def image_to_base64(path):
 
 
 
-def decision_tree(input_file, sector, button_path):
+def decision_tree(input_file, sector, button_path, filter_sector):
     # Convert sequences to DataFrame
-    df = pd.read_csv(input_file, names=['Measure 1', 'Measure 2', 'Measure 3', 'Measure 4'], skiprows=1)
+    df = pd.read_csv(input_file, names=['Measure 1', 'Measure 2', 'Measure 3', 'Measure 4'])
+    df = df.loc[filter_sector[1:]]
+
 
     # Function to assign group numbers based on unique combinations
     def assign_group_numbers(df, depth):
@@ -73,15 +76,14 @@ def decision_tree(input_file, sector, button_path):
     df_sorted['Position_measure_0'] = (df_sorted['Position_measure_1'].min() + df_sorted['Position_measure_1'].max()) / 2
     df_sorted[f'Group up to Measure 0'] = 1
 
-    # df_sorted[['Group up to Measure 1', 'Group up to Measure 2', 'Group up to Measure 3', 'Group up to Measure 4',
-    #            'Position_measure_1', 'Position_measure_2', 'Position_measure_3', 'Position_measure_4']]
-
     # Preparing data for the scatter plot
     x_positions = []
     y_positions = []
     image_paths = []
     measure_names = []
     measure_expl = []
+    pw_number = []
+
 
     # Iterating over the Position_measure columns to collect x and y positions for the scatter plot
     for i in range(5):
@@ -92,21 +94,39 @@ def decision_tree(input_file, sector, button_path):
             image_paths.extend([f'{button_path}/no_measure.png' for _ in df_sorted.index])
             measure_names.extend([f'Starting Point/No Measure' for _ in df_sorted.index])
             measure_expl.extend([f'' for _ in df_sorted.index])
+            pw_number.extend(df_sorted.index)
         else:
             column_name = f'Measure {i}'
             image_paths.extend(f'{button_path}/{x}.png' for x in df_sorted[column_name])
             measure_names.extend([MEASURE_DICT[x] for x in df_sorted[column_name]])
             measure_expl.extend([MEASURE_EXPL[x] for x in df_sorted[column_name]])
+            pw_number.extend(df_sorted.index)
 
     # Creating a DataFrame with the correct structure
     df_test = pd.DataFrame({
+
         'X_Positions': x_positions,
         'Y_Positions': y_positions,
         'Image_Paths': image_paths,
         'Measure_Names': measure_names,
         'Measure_Explanation': measure_expl
     })
+
+    df_pathways = pd.DataFrame({
+        'Pathway': pw_number,
+        'X_Positions': x_positions,
+        'Y_Positions': y_positions,
+    })
+
     df_test = df_test.drop_duplicates()
+
+    df_pathways = df_pathways.drop_duplicates(subset=['Y_Positions'])
+    # Get the index of the maximum 'X_Positions' within each 'Pathway' group
+    max_indices = df_pathways.groupby('Pathway')['X_Positions'].idxmax()
+
+    # Filter the DataFrame using these indices
+    df_pathways = df_pathways.loc[max_indices]
+
     fig = go.Figure()
     # Creating the scatter plot with Plotly
     fig.add_trace(go.Scatter(x=df_test['X_Positions'], y=df_test['Y_Positions'],
@@ -119,6 +139,21 @@ def decision_tree(input_file, sector, button_path):
                      "<extra></extra>",  # Use <extra></extra> to hide the trace name in the hover
                      customdata=df_test['Measure_Explanation'],  # Using custom data for the explanation
                   ))
+
+    # Add text annotation at x=4.5 and y=y_position
+    # Add annotations for each row in the DataFrame
+    for index, row in df_pathways.iterrows():
+        fig.add_annotation(
+            x=4.5,
+            y=row['Y_Positions'],
+            text=int(row['Pathway']),  # Use the pathway value as the annotation text
+            showarrow=False,
+            font=dict(  # Setting font properties
+                size=16,)  # Font size)
+            # arrowhead=1,
+            # ax=0,
+            # ay=-40
+        )
 
     # Adding vertical lines based on the logic described
     for i in range(4):  # Only up to measure 3 since we look ahead by one
@@ -136,13 +171,13 @@ def decision_tree(input_file, sector, button_path):
                 fig.add_shape(type='line',
                               x0=i + 0.5, y0=min_pos,
                               x1=i + 0.5, y1=max_pos,
-                              line=dict(color='green', width=2)
+                              line=dict(color='gray', width=2)
                               )
 
     # Adding horizontal lines for both identical and different y-values between measures
     drawn_lines = set()  # Initialize a set to keep track of drawn lines
     only_necessary = df_sorted.drop_duplicates(subset=[f'Position_measure_{k}' for k in range(4)])
-    print(only_necessary)
+
     for index, row in only_necessary.iterrows():
         for i in range(4):  # Up to measure 3 to look ahead to measure 4
             current_pos = row[f'Position_measure_{i}']
@@ -157,19 +192,19 @@ def decision_tree(input_file, sector, button_path):
             if current_pos == next_pos:
                 if line_part0 not in drawn_lines:
                     fig.add_shape(type='line', x0=line_part0[0], y0=line_part0[1], x1=line_part0[2], y1=line_part0[3],
-                                  line=dict(color='green', width=2), layer='below')
+                                  line=dict(color='gray', width=2), layer='below')
                     drawn_lines.add(line_part0)  # Mark this line as drawn
             # Draw the first part of the horizontal line if it hasn't been drawn
             else:
                 if line_part1 not in drawn_lines:
                     fig.add_shape(type='line', x0=line_part1[0], y0=line_part1[1], x1=line_part1[2], y1=line_part1[3],
-                                  line=dict(color='green', width=2), layer='below')
+                                  line=dict(color='gray', width=2), layer='below')
                     drawn_lines.add(line_part1)  # Mark this line as drawn
 
                 # Draw the second part of the horizontal line if it hasn't been drawn
                 if line_part2 not in drawn_lines:
                     fig.add_shape(type='line', x0=line_part2[0], y0=line_part2[1], x1=line_part2[2], y1=line_part2[3],
-                                  line=dict(color='green', width=2), layer='below')
+                                  line=dict(color='gray', width=2), layer='below')
                     drawn_lines.add(line_part2)  # Mark this line as drawn
     for i, row in df_test.iterrows():
         fig.add_layout_image(
@@ -190,12 +225,19 @@ def decision_tree(input_file, sector, button_path):
 
     # Adjust layout for the y-axis on the right
     fig.update_layout(
-        yaxis=dict(side='right', showgrid=False),
+        yaxis=dict(
+            side='right',  # Position y-axis on the right side
+            showgrid=False,  # Hide gridlines for y-axis
+            ticktext=['' for _ in range(len(df_test.Y_Positions))]
+
+
+        ),
         xaxis=dict(
-        tickmode = 'linear',
-        tick0 = 0,
-        dtick = 1,
-        showgrid=False),
+            tickmode='linear',
+            tick0=0,
+            dtick=1,
+            showgrid=False,  # Hide gridlines for x-axis
+        ),
         title='Alternative Pathways and their Measure Sequences',
         xaxis_title="Measure Number",
         yaxis_title="Alternative Pathways"
@@ -212,12 +254,21 @@ def decision_tree(input_file, sector, button_path):
         )
     )
 
+    fig.update_layout(
+        autosize=False,
+        width=700,
+        height=900,
+    )
+
     # fig.show()
-    fig.write_html(f"Paper3_v1/figures/decision_tree/stage3_portfolios_{sector}.html")
+    # fig.write_html(f"Paper3_v1/figures/decision_tree/stage3_portfolios_{sector}.html")
+    fig.write_json(f"Dashboard_v1/assets/figures/decision_tree/alternative_pathways_{sector}.json")
+
+filter_conditions = FILTER_CONDITIONS
 
 sectors = ['flood_agr', 'drought_agr', 'flood_urb', 'drought_shp']
 input_file = 'Paper3_v1/data/stage3_portfolios_'
 # button_path = 'Paper3_v1/data/logos/colorized'
 button_path = 'https://raw.githubusercontent.com/JuliusSchlumberger/5_code/master/Paper3_v1/data/logos/colorized'
 for sector in sectors:
-    decision_tree(f'{input_file}{sector}.txt',sector, button_path)
+    decision_tree(f'{input_file}{sector}.txt',sector, button_path, filter_conditions[sector])

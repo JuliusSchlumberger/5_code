@@ -17,6 +17,7 @@ def get_normalized_performance(performance_df, benchmark_df_file, normalized_df_
 
     objective_df.rename(columns={'pw_combi_normal': 'pw_combi'}, inplace=True)
     objective_df.rename(columns={'Value_normal': 'Value'}, inplace=True)
+    objective_df['Value'] = objective_df['value'].round(2)
 
     objective_df.to_csv(normalized_df_file, index=False)
 

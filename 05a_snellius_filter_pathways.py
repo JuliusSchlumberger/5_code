@@ -1,0 +1,12 @@
+from Paper3_v1.main_performance import filter_pathways
+from Paper3_v1.main_central_path_directions import DIRECTORY_PATH_FILTERED,DIRECTORY_PATH_PERFORMANCE, ROH_LIST, FILE_PATH_BENCHMARK_OUT, FILTER_CONDITIONS
+import sys
+
+input_directory = DIRECTORY_PATH_PERFORMANCE
+filtered_directory_path = DIRECTORY_PATH_FILTERED
+rohs = ROH_LIST
+benchmark_file_path = FILE_PATH_BENCHMARK_OUT
+risk_owner_hazard_of_interest=sys.argv[1]
+filter_conditions = FILTER_CONDITIONS
+
+filter_pathways(input_directory, risk_owner_hazard_of_interest,rohs, filter_conditions, filtered_directory_path)

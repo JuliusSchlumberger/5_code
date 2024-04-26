@@ -83,9 +83,6 @@ def Parallel_Coordinates_Plot(df, risk_owner_hazard, figure_title, df_interactio
         )
     )
 
-    # Add figure title
-    fig.update_layout(title={'text': figure_title,'y':.98, 'x':0.5, 'xanchor': 'center', 'yanchor': 'top'})
-
     # Adjust axis labels
     # Use np.vectorize to apply the replacement
     replace_function = np.vectorize(lambda x: { 0: '5% confident', .5: '50% confident', .6: 'robustness indicator', 1: '95% confident'}.get(x, x))
@@ -152,6 +149,12 @@ def Parallel_Coordinates_Plot(df, risk_owner_hazard, figure_title, df_interactio
     #     line_width=0,
     # )
 
+    fig.update_layout(
+        # autosize=True,  # Allows the figure to resize based on the enclosing HTML element's size
+        margin=dict(t=50, b=20),  # Adjust margins to ensure content fits well; customize as needed
+        # xaxis=dict(side='top')
+    )
+
     # Add an annotation for the first axis if needed to label it as 'Strategy Options'
     fig.add_annotation(
         x=0,  # Position at the start
@@ -190,6 +193,24 @@ def Parallel_Coordinates_Plot(df, risk_owner_hazard, figure_title, df_interactio
         xanchor="center",
         yanchor="bottom",
     )
+    fig.update_layout(
+        # autosize=True,  # Allows the figure to resize based on the enclosing HTML element's size
+        margin=dict(t=100, b=20),  # Adjust margins to ensure content fits well; customize as needed
+        # xaxis=dict(side='top')
+    )
+
+    fig.update_layout(
+        title={'text': figure_title, 'y': 0.99, 'x': 0.5, 'xanchor': 'center', 'yanchor': 'top'},
+        margin=dict(t=100, b=50)
+    )
+
+    # Set the layout with calculated dimensions
+    fig.update_layout(
+        # title="Example Plot with 2:3 Aspect Ratio",
+        width=1300,  # Width set to 600 pixels
+        height=600,  # Height calculated based on the 2:3 ratio
+        autosize=False  # Disable autosizing to use the specified width and height
+    )
 
     # # Add a downward arrow to indicate the direction of preference
     # fig.add_annotation(
@@ -205,9 +226,25 @@ def Parallel_Coordinates_Plot(df, risk_owner_hazard, figure_title, df_interactio
     #     ax=0,  # Horizontal offset
     #     ay=-50  # Negative value for downward arrow (adjust the length as needed)
     # )
-    fig.update_layout(
-        # autosize=True,  # Allows the figure to resize based on the enclosing HTML element's size
-        # margin=dict(l=50, r=50, t=50, b=20)  # Adjust margins to ensure content fits well; customize as needed
-    )
+    # fig.update_layout(
+    #     autosize=True,  # Allows the figure to resize based on the enclosing HTML element's size
+    #     # margin=dict(l=50, r=50, t=50, b=20),  # Adjust margins to ensure content fits well; customize as needed
+    #     # xaxis=dict(side='top')
+    # )
+
+    # fig.update_xaxes(domain=[0.25, 1])  # Adjusting the domain can change the plotting area's width
+    # fig.update_yaxes(domain=[0., .8])  # Adjusting the domain can change the plotting area's width
+    # fig.update_yaxes(title_text='')
+    # fig.add_annotation(
+    #     x=-0.03,  # Adjust this value to move the label left or right
+    #     y=0.5,  # Adjust this value to move the label up or down
+    #     text=f'{ROH_DICT_INV[risk_owner_hazard]} pathway options',  # Your y-axis label text here
+    #     showarrow=False,
+    #     xref='paper',
+    #     yref='paper',
+    #     textangle=-90,  # Rotate text for vertical orientation
+    #     font=dict(size=14),  # Adjust font size as needed
+    #     align='center'
+    # )
 
     return fig
