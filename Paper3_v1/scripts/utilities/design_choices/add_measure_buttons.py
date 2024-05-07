@@ -9,17 +9,19 @@ from plotly.subplots import make_subplots
 
 
 def add_measure_buttons(fig, y_ticks, risk_owner_hazard):
-    for y_tick in y_ticks:
+    print(y_ticks)
+    print(fig.layout.yaxis.tickvals, fig.layout.yaxis.ticktext)
+    for y_tick, tick in enumerate(y_ticks):
         img_path = f'{LEGENDS_LOCATION_GITHUB}/{risk_owner_hazard}_pathway_{y_tick-1}_ylabel.png'
         fig.add_layout_image(
             dict(
                 source=img_path,
                 xref="paper",  # Use "paper" for relative positioning
                 yref="y",  # Use axis ID for aligning with specific ticks
-                x=.13,  # Adjust this value to position the image on the x-axis
-                y=str(int(y_tick) - 1),  # Align with a specific y-axis tick label
-                sizex=1,
-                sizey=1,
+                x=.24,  # Adjust this value to position the image on the x-axis
+                y=y_tick,  # Align with a specific y-axis tick label
+                sizex=.7,
+                sizey=.7,
                 xanchor="right",
                 yanchor="middle"
             ),

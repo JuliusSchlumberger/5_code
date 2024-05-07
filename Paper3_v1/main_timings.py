@@ -53,6 +53,14 @@ def combine_all_pathways_sets(directory_path,rohs, outputfile_path,filter_condit
 
     # Concatenate all DataFrames in the list
     combined_df = pd.concat(dfs, ignore_index=True)
+
+    combined_df[rohs] = combined_df.pw_combi.str.split('_', expand=True).astype(int)
+
+    # Apply Filter
+    # Here we do a simple manual filtering but of course any sort of filtering could be used.
+    for risk_owner in rohs:
+        combined_df = combined_df[combined_df[risk_owner].isin(filter_conditions[risk_owner])]
+
     combined_df.to_csv(outputfile_path, index=False)
 
     dfs = []
@@ -65,13 +73,6 @@ def combine_all_pathways_sets(directory_path,rohs, outputfile_path,filter_condit
 
     # Concatenate all DataFrames in the list
     combined_df = pd.concat(dfs, ignore_index=True)
-
-    combined_df[rohs] = combined_df.pw_combi.str.split('_', expand=True).astype(int)
-
-    # Apply Filter
-    # Here we do a simple manual filtering but of course any sort of filtering could be used.
-    for risk_owner in rohs:
-        combined_df = combined_df[combined_df[risk_owner].isin(filter_conditions[risk_owner])]
 
     # Save file
     combined_df.to_csv(removed_measures_path, index=False)

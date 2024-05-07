@@ -113,6 +113,15 @@ def Stacked_Bar_Plot(df, risk_owner_hazard, sector_objectives, figure_title, df_
     # Update the Y-axis label
     # fig.update_yaxes(title_text=f'{find_key_by_value_string(ROH_DICT, risk_owner_hazard)} pathway options')
     fig.update_yaxes(title_text='')
+
+    fig.update_layout(
+        yaxis=dict(
+            tickmode='array',
+            tickvals=list(range(len(y_axis_values))),
+            ticktext=y_axis_values
+        )
+    )
+
     fig.add_annotation(
         x=-0.0,  # Adjust this value to move the label left or right
         y=0.6,  # Adjust this value to move the label up or down

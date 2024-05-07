@@ -26,7 +26,7 @@ def get_performance_across_interactions(df, rohs, outputfile_path):
     # print(df[df.flood_urb != '00'])
     # print(error)
     mapping_dict = get_sequences(df)
-
+    print(mapping_dict)
     # No Interactions
     for target_roh in rohs:
         df_subset = df.copy()
@@ -51,7 +51,7 @@ def get_performance_across_interactions(df, rohs, outputfile_path):
         all_interactions = [interact for interact in ROH_DICT_INV.keys() if interact != target_roh]
         # all_combis = [all_interactions[:i] for i in range(len(all_interactions)+1)]
         all_combis = [all_interactions[:i] for i in range(len(all_interactions) + 1)]
-        all_combis = ['&'.join(interaction_set) for interaction_set in all_combis]
+        all_combis = [target_roh + '&' + '&'.join(interaction_set) for interaction_set in all_combis]
 
         # interaction_combinations = generate_combinations(rohs, target_roh)
 
@@ -69,6 +69,7 @@ def get_performance_across_interactions(df, rohs, outputfile_path):
                 df_subset_i = df_subset_i[
                     df_subset_i[specific_roh] != '00']  # those combinations where measures implemented for relevant_roh
             # Group by and aggregate with custom logic
+
             df_subset_i.index.names = ['new_index_name' if x == target_roh else x for x in df_subset_i.index.names]
 
             # mapping_dict = get_sequences(df_subset_i, outputfile_path, target_roh, interaction)

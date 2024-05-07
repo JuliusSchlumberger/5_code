@@ -67,43 +67,57 @@ def convert_into_pathway_sequence(subset, mapping_dict, roh):
         pathway =  str(int(row[roh]))
 
         parts = sequence.split('&')
-
+        print(parts)
         # Step 1: Count the & characters
         ampersand_count = sequence.count('&')
         for no_pathway_change in range(1,ampersand_count):
+
             left_part = parts[no_pathway_change - 1]  # The part immediately before the nth &
             right_part = parts[no_pathway_change]  # The part immediately after the nth &\
+            print(no_pathway_change, left_part, right_part)
             if right_part == '99':
+                print('from_measure implemented beyond timehorizon')
+                # print(no_pathway_change, right_part, left_part)
                 pass
-
             else:
+                def get_left_part(parts, n):
+                    # Join the first n parts with '&' and ensure we do not exceed the length of parts
+                    if n <= len(parts):
+                        return '&'.join(parts[:n])
+                    else:
+                        return '&'.join(parts)  # return the whole sequence if n is larger than number of parts
+
+
                 # identifier left
-                identifier_left = '&'.join(str(num) for num in parts[:no_pathway_change - 1]) + '&'
-                if identifier_left + right_part in output_dict['check_sequ'] and any(
-                        pathway in string for string in output_dict['pathway']):  # same sequence already processed
-                    pass
-                elif identifier_left + right_part in output_dict['check_sequ'] and not any(pathway in string for string in output_dict[
-                    'pathway']):  # sequence processed, but for different pathway
-                    index_pathway = output_dict['check_sequ'].index(identifier_left + right_part)
-                    output_dict['pathway'][index_pathway] += ';' + pathway
-                    pass
+                # identifier_left = '&'.join(str(num) for num in parts[:no_pathway_change - 1]) + '&'
+                identifier_left = get_left_part(parts, no_pathway_change-1) + '&'  # Everything before the first '&'
+                identifier_full = get_left_part(parts, no_pathway_change+1)
+                if identifier_full in output_dict['check_sequ'] and pathway in output_dict['pathway'][output_dict['check_sequ'].index(identifier_full)]: # same sequence already processed
+                        print('already processed', identifier_full, pathway, output_dict['check_sequ'], output_dict['pathway'][output_dict['check_sequ'].index(identifier_full)])
+                        pass
+                elif identifier_full in output_dict['check_sequ'] and not pathway in output_dict['pathway'][output_dict['check_sequ'].index(identifier_full)]: # sequence processed, but for different pathway
+                        print('already processed, but for different pathway ', identifier_full, pathway, output_dict['check_sequ'], output_dict['pathway'][output_dict['check_sequ'].index(identifier_full)])
+                        output_dict['pathway'][output_dict['check_sequ'].index(identifier_full)] += ';' + pathway
+                        pass
                 else:
                     if parts[no_pathway_change+1] == '99':
-                        identifier_right = '&'.join(str(num) for num in parts[:no_pathway_change]) + '&99'
+                        identifier_right = get_left_part(parts, no_pathway_change) + '&99'
                     else:
-                        identifier_right = '&'.join(str(num) for num in parts[:no_pathway_change]) + '&'
-
+                        identifier_right = get_left_part(parts, no_pathway_change) + '&'
+                    print('new line added', no_pathway_change, left_part, right_part, identifier_full, identifier_left,
+                          identifier_right)
                     if left_part == '0':
                         replacement_left = 'current'
                     else:
                         replacement_left = mapping_dict[left_part][identifier_left]
                     # print(mapping_dict)
                     # print(ampersand_count, sequence, right_part, left_part,parts[no_pathway_change], identifier_left)
+
                     replacement_right = mapping_dict[right_part][identifier_right]
 
                     output_dict['from_measure'].append(replacement_left)
                     output_dict['to_measure'].append(replacement_right)
-                    output_dict['check_sequ'].append(identifier_left + right_part)
+                    output_dict['check_sequ'].append(identifier_full)
                     output_dict['pathway'].append(pathway)
     # output_dict['from_measure'] = from_measure
     # output_dict['to_measure'] = to_measure

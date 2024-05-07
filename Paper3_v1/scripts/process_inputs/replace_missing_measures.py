@@ -4,6 +4,41 @@ import pandas as pd
 
 
 def replace_missing_measures(df):
+    # Prepare to collect indices for removal and modification
+    to_remove_indices = []
+
+    # Grouping by the specified columns
+    groups = df.groupby(['pw_combi', 'cc_scenario', 'climvar', 'system_parameter'])
+
+    for name, group in groups:
+        # Identify rows that meet the condition
+        condition_mask = group['Value'].str.contains('&&') | group['Value'].str.endswith('&')
+        valid_rows = group[condition_mask]
+
+        if not valid_rows.empty:
+            # Find the row with the minimum Year
+            min_year_idx = valid_rows['year'].idxmin()
+            to_remove_indices.append(min_year_idx)
+
+            for idx, row in valid_rows.iterrows():
+                if row['system_parameter'] == 'pathways_list_d_a':
+                    replaced_measure = '1'
+                elif row['system_parameter'] == 'pathways_list_f_a':
+                    replaced_measure = '10'
+
+                if '&&' in row['Value']:
+                    df.at[idx, 'Value'] = row['Value'].replace('&&', f'&{replaced_measure}&')
+                if row['Value'].endswith('&'):
+                    df.at[idx, 'Value'] = f"{row['Value'].rstrip('&')}&{replaced_measure}"
+
+    # Remove rows
+    removed_rows = df.loc[to_remove_indices]
+    df = df.drop(to_remove_indices)
+
+    return df, removed_rows
+
+
+def replace_missing_measures_old_v3(df):
 
     # Step 1: Find special rows meeting conditions and having the lowest 'Year' for each unique combination
     special_rows = df[df['Value'].str.contains('&&') | df['Value'].str.endswith('&')]

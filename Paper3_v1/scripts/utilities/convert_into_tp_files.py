@@ -75,29 +75,28 @@ def convert_into_tp_files(subset, mapping_dict):
     for index, row in subset.iterrows():
         # print(row)
         tp_value = row['year'] + 2020
-        sequence = row['Value']
+        sequence = row['implementation_across_multi_risk']
         parts = sequence.split('&')
 
         # Step 1: Count the & characters
         ampersand_count = sequence.count('&')
 
-        if ampersand_count >= 1:
-            measure_to_find_allocate_tp = parts[ampersand_count - 1]
+        measure_to_find_allocate_tp = parts[ampersand_count]
 
-            if measure_to_find_allocate_tp == '0':
-                identifier_measure = 'current'
-
+        if measure_to_find_allocate_tp == '0':
+            identifier_measure = 'current'
+        else:
+            end_value = row['Value'].split('&')[-1]
+            if end_value == '99':
+                identifier = '&'.join(str(num) for num in parts[:ampersand_count]) + '&99'
             else:
-                if parts[ampersand_count] == '99':
-                    identifier = '&'.join(str(num) for num in parts[:ampersand_count - 1]) + '&99'
-                else:
-                    identifier = '&'.join(str(num) for num in parts[:ampersand_count-1]) + '&'
-                # print(ampersand_count, sequence, measure_to_find_allocate_tp, identifier, mapping_dict[measure_to_find_allocate_tp])
+                identifier = '&'.join(str(num) for num in parts[:ampersand_count]) + '&'
 
-                identifier_measure = mapping_dict[measure_to_find_allocate_tp][identifier]
-
-            conditional_measure.append(identifier_measure)
-            tipping_point.append(int(tp_value))
+            print(ampersand_count, sequence, measure_to_find_allocate_tp, identifier, mapping_dict[measure_to_find_allocate_tp])
+            identifier_measure = mapping_dict[measure_to_find_allocate_tp][identifier]
+            print(identifier_measure)
+        conditional_measure.append(identifier_measure)
+        tipping_point.append(int(tp_value))
     output_dict['conditional_measure'] = conditional_measure
     output_dict['tipping_point'] = tipping_point
 

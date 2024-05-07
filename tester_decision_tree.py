@@ -118,14 +118,18 @@ def decision_tree(input_file, sector, button_path, filter_sector):
         'Y_Positions': y_positions,
     })
 
-    df_test = df_test.drop_duplicates()
-
-    df_pathways = df_pathways.drop_duplicates(subset=['Y_Positions'])
     # Get the index of the maximum 'X_Positions' within each 'Pathway' group
     max_indices = df_pathways.groupby('Pathway')['X_Positions'].idxmax()
 
+
     # Filter the DataFrame using these indices
     df_pathways = df_pathways.loc[max_indices]
+    # print(df_pathways)
+    # df_pathways = df_pathways.drop_duplicates(subset=['Y_Positions'])
+    print(df_pathways)
+    position_dict = {row['Y_Positions']: str(int(row['Pathway'])) for index, row in df_pathways.iterrows()}
+
+    # print(error)
 
     fig = go.Figure()
     # Creating the scatter plot with Plotly
@@ -139,21 +143,6 @@ def decision_tree(input_file, sector, button_path, filter_sector):
                      "<extra></extra>",  # Use <extra></extra> to hide the trace name in the hover
                      customdata=df_test['Measure_Explanation'],  # Using custom data for the explanation
                   ))
-
-    # Add text annotation at x=4.5 and y=y_position
-    # Add annotations for each row in the DataFrame
-    for index, row in df_pathways.iterrows():
-        fig.add_annotation(
-            x=4.5,
-            y=row['Y_Positions'],
-            text=int(row['Pathway']),  # Use the pathway value as the annotation text
-            showarrow=False,
-            font=dict(  # Setting font properties
-                size=16,)  # Font size)
-            # arrowhead=1,
-            # ax=0,
-            # ay=-40
-        )
 
     # Adding vertical lines based on the logic described
     for i in range(4):  # Only up to measure 3 since we look ahead by one
@@ -214,54 +203,43 @@ def decision_tree(input_file, sector, button_path, filter_sector):
             yref="y",  # Use "paper" for positioning relative to the plot area
             x=row['X_Positions'],  # X-coordinate position
             y=row['Y_Positions'],  # Y-coordinate position
-            sizex=.9,  # Adjust size as needed
-            sizey=.9,  # Adjust size as needed
+            sizex=.85,  # Adjust size as needed
+            sizey=.85,  # Adjust size as needed
             xanchor="center",
             yanchor="middle",
             layer="above"  # Place the image below or above the data
         )
 
-    #
-
-    # Adjust layout for the y-axis on the right
+    # Update layout to configure axes and labels
     fig.update_layout(
         yaxis=dict(
+            showgrid=False,
             side='right',  # Position y-axis on the right side
-            showgrid=False,  # Hide gridlines for y-axis
-            ticktext=['' for _ in range(len(df_test.Y_Positions))]
-
-
+            tickmode='array',
+            tickvals=[key for key in position_dict.keys()],  # Ensure there's a tickval for each ticktext
+            ticktext=[position_dict[key] for key in position_dict.keys()],
         ),
         xaxis=dict(
-            tickmode='linear',
-            tick0=0,
-            dtick=1,
-            showgrid=False,  # Hide gridlines for x-axis
+            tickmode='array',
+            tickvals=[i for i in range(5)],
+            ticktext=['' if numb == 0 else f'{numb}' for numb in range(5)],
+            showgrid=False
         ),
         title='Alternative Pathways and their Measure Sequences',
         xaxis_title="Measure Number",
-        yaxis_title="Alternative Pathways"
-    )
-
-    # Optionally, adjust layout further for aesthetics
-    fig.update_layout(
-        showlegend=False,
+        yaxis_title="Alternative Pathways",
         plot_bgcolor="white",
+        autosize=False,
         font=dict(
-            # family="Courier New, monospace",
-            size=12,
-            # color="RebeccaPurple"
-        )
+                size=14,
+                ),
+        width=600,
+        height=600,
     )
 
-    fig.update_layout(
-        autosize=False,
-        width=700,
-        height=900,
-    )
 
     # fig.show()
-    # fig.write_html(f"Paper3_v1/figures/decision_tree/stage3_portfolios_{sector}.html")
+    fig.write_html(f"Paper3_v1/figures/decision_tree/stage3_portfolios_{sector}.html")
     fig.write_json(f"Dashboard_v1/assets/figures/decision_tree/alternative_pathways_{sector}.json")
 
 filter_conditions = FILTER_CONDITIONS

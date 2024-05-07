@@ -94,7 +94,7 @@ def pathways_performance(scenarios, plot_type, risk_owner_hazard, performance_me
         return go.Figure()
 
 
-for plot_type in ['PCP', 'StackedBar', 'Heatmap']:
+for plot_type in ['StackedBar', 'PCP', 'Heatmap']:
 # for plot_type in ['PCP']:
     for risk_owner_hazard in ROH_DICT_INV:
         for performance_metric in PERFORMANCE_METRICS_LIST:
@@ -105,6 +105,8 @@ for plot_type in ['PCP', 'StackedBar', 'Heatmap']:
                     else:
                         scenario_str = scenarios[0]
                     fig = pathways_performance(scenarios, plot_type, risk_owner_hazard, performance_metric, timehorizon)
+                    fig.show()
+                    print(error)
                     pathlib.Path(f'Dashboard_v1/assets/figures/{plot_type}/{risk_owner_hazard}/').mkdir(parents=True, exist_ok=True)
                     fig.write_json(f'Dashboard_v1/assets/figures/{plot_type}/{risk_owner_hazard}/plot_{timehorizon}_{scenario_str}_{performance_metric}.json')
                     # fig.write_html(
